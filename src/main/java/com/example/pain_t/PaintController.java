@@ -95,6 +95,17 @@ public class PaintController {
         System.out.println("View Clicked");
     }
 
+    //Click event for Menu > Help > Help
+    public void ClickedMenuBar_Help_Help(ActionEvent e) {
+        System.out.println("Help/About Clicked");
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Helpful Information Dialog");
+        alert.setHeaderText(null);
+        alert.setContentText("It's a paint application. Figure it out.");
+        alert.showAndWait();
+    }
+
     //Click event for Menu > Help > About
     public void ClickedMenuBar_Help_About(ActionEvent e) {
         System.out.println("Help/About Clicked");
