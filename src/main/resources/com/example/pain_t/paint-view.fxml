@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.canvas.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.input.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane fx:id="ap" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.pain_t.PaintController">
+   <children>
+      <MenuBar prefHeight="32.0" prefWidth="600.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+              <MenuItem fx:id="fileNew" mnemonicParsing="false" onAction="#ClickedMenuBar_File_New" text="New">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="N" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator></MenuItem>
+                  <MenuItem fx:id="fileOpen" mnemonicParsing="false" onAction="#ClickedMenuBar_File_Open" text="Open">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator></MenuItem>
+                  <MenuItem fx:id="fileSave" mnemonicParsing="false" onAction="#ClickedMenuBar_File_Save" text="Save">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator></MenuItem>
+                  <MenuItem fx:id="fileSaveAs" mnemonicParsing="false" onAction="#ClickedMenuBar_File_SaveAs" text="Save As" />
+                  <MenuItem fx:id="fileExit" mnemonicParsing="false" onAction="#ClickedMenuBar_File_Exit" text="Exit">
+                     <accelerator>
+                        <KeyCodeCombination alt="DOWN" code="F4" control="UP" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator></MenuItem>
+            </items>
+          </Menu>
+          <Menu fx:id="HomeMenu" mnemonicParsing="false" onAction="#ClickedMenuBar_Home" text="Toolbar">
+               <items>
+                  <MenuItem mnemonicParsing="false" onAction="#ClickedMenuBar_Home" text="Home">
+                     <accelerator>
+                        <KeyCodeCombination alt="DOWN" code="H" control="UP" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator></MenuItem>
+                  <MenuItem mnemonicParsing="false" onAction="#ClickedMenuBar_View" text="View">
+                     <accelerator>
+                        <KeyCodeCombination alt="DOWN" code="V" control="UP" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator></MenuItem>
+               </items></Menu>
+            <Menu mnemonicParsing="false" text="Help">
+              <items>
+                <MenuItem mnemonicParsing="false" onAction="#ClickedMenuBar_Help_About" text="About" />
+              </items>
+            </Menu>
+        </menus>
+      </MenuBar>
+      <ToolBar fx:id="HomeToolbar" layoutY="32.0" prefHeight="64.0" prefWidth="600.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+         <items>
+            <Button mnemonicParsing="false" onAction="#ClickedToolBarButton" style="-fx-background-image: url(Users\jeb\Pictures\DSP_HW15.PNG);" text="Pain(t)">
+               <graphic>
+                  <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@paintbrush.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
+            <ColorPicker />
+            <ChoiceBox prefWidth="150.0" />
+         </items></ToolBar>
+      <ScrollPane layoutY="96.0" prefHeight="304.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="96.0">
+         <content>
+            <Canvas fx:id="canvas" height="400.0" width="600.0" />
+         </content>
+      </ScrollPane>
+   </children>
+</AnchorPane>
