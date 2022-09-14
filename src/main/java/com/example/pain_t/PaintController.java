@@ -13,6 +13,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
+
 import javax.imageio.ImageIO;
 import java.io.File;
 
@@ -50,8 +52,8 @@ public class PaintController {
             Image image = new Image(selectedFile.toURI().toString());
                 canvas.setWidth(image.getWidth());
                 canvas.setHeight(image.getHeight());
-            GraphicsContext gc1 = canvas.getGraphicsContext2D();
-            gc1.drawImage(image, 0, 0);
+            GraphicsContext gc = canvas.getGraphicsContext2D();
+            gc.drawImage(image, 0, 0);
         }
     }
 
@@ -84,7 +86,13 @@ public class PaintController {
     //Click event for Menu > File > Exit
     public void ClickedMenuBar_File_Exit(ActionEvent e) {
         System.out.println("File/Exit Clicked");
-        System.exit(0);
+        Stage stage = (Stage) canvas.getScene().getWindow();
+        stage.fireEvent(
+                new WindowEvent(
+                        stage,
+                        WindowEvent.WINDOW_CLOSE_REQUEST
+                )
+        );
     }
 
     //Click event for Menu > Toolbar > Home
@@ -113,7 +121,7 @@ public class PaintController {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Information Dialog");
         alert.setHeaderText(null);
-        alert.setContentText("Welcome to Pain(t) Version 3.1\n\nIcons sourced from https://icons8.com/");
+        alert.setContentText("Welcome to Pain(t) Version 3.14\n\nIcons sourced from https://icons8.com/");
         alert.showAndWait();
     }
     //END OF TOP MENUBAR
@@ -128,6 +136,37 @@ public class PaintController {
 
     //END OF TOP TOOLBAR
 
+    //CANVAS DRAW METHODS
+
+    public void PressedCanvas(javafx.scene.input.MouseEvent mouseEvent) {
+        System.out.println("Pressed on Canvas");
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+        gc.setLineWidth(5.0);
+        gc.beginPath();
+        gc.moveTo(mouseEvent.getX(), mouseEvent.getY());
+        gc.stroke();
+    }
+
+    public void DraggedCanvas(javafx.scene.input.MouseEvent mouseEvent) {
+        System.out.println("Dragged on Canvas");
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+        gc.lineTo(mouseEvent.getX(), mouseEvent.getY());
+        gc.stroke();
+        gc.closePath();
+        gc.beginPath();
+        gc.moveTo(mouseEvent.getX(), mouseEvent.getY());
+    }
+
+    public void ReleasedCanvas(javafx.scene.input.MouseEvent mouseEvent) {
+        System.out.println("Dragged on Canvas");
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+        gc.lineTo(mouseEvent.getX(), mouseEvent.getY());
+        gc.stroke();
+        gc.closePath();
+
+
+    }
+    //END OF CANVAS DRAW METHODS
 
     //HELPER METHODS
 
@@ -160,8 +199,10 @@ public class PaintController {
         canvas.setHeight(canvas.getScene().getWindow().getHeight() - 96); //96 equals height of menu and toolbar
         canvas.getGraphicsContext2D().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
     }
-
     //END OF HELPER METHODS
+
+
+
 
 }
 
