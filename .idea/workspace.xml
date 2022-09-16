@@ -7,7 +7,6 @@
     <list default="true" id="f1879801-718a-481e-9d00-4e43f4ce0018" name="Changes" comment="Commit">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/pain_t/PaintController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/pain_t/PaintController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/pain_t/paint-view.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/example/pain_t/paint-view.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -121,7 +120,14 @@
       <option name="project" value="LOCAL" />
       <updated>1663303868100</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Commit">
+      <created>1663310641393</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1663310641393</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
