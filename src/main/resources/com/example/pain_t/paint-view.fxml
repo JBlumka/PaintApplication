@@ -23,7 +23,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="ap" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="760.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.pain_t.PaintController">
+<AnchorPane fx:id="ap" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="858.0" prefWidth="1002.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.pain_t.PaintController">
    <children>
       <MenuBar prefHeight="32.0" prefWidth="600.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
         <menus>
@@ -211,9 +211,13 @@
             </GridPane>
             <Separator orientation="VERTICAL" prefHeight="20.0" />
          </items></ToolBar>
-      <ScrollPane layoutY="96.0" prefHeight="304.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="96.0">
+      <ScrollPane layoutY="96.0" prefHeight="304.0" prefWidth="600.0" stylesheets="@scrollpaneStyle.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="96.0">
          <content>
-            <Canvas fx:id="canvas" height="760.0" onMouseDragged="#DraggedCanvas" onMousePressed="#PressedCanvas" onMouseReleased="#ReleasedCanvas" width="1000.0" />
+            <AnchorPane prefHeight="1.0" prefWidth="1.0" style="-fx-background-color: white;">
+               <children>
+                  <Canvas fx:id="canvas" height="500.0" onMouseDragged="#DraggedCanvas" onMousePressed="#PressedCanvas" onMouseReleased="#ReleasedCanvas" width="1000.0" />
+               </children>
+            </AnchorPane>
          </content>
       </ScrollPane>
    </children>
