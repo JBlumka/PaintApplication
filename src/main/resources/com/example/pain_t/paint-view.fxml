@@ -42,7 +42,6 @@
                         <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator></MenuItem>
                   <MenuItem fx:id="fileSaveAs" mnemonicParsing="false" onAction="#ClickedMenuBar_File_SaveAs" text="Save As" />
-                  <MenuItem mnemonicParsing="false" onAction="#ClickedMenuBar_File_Print" text="Print" />
                   <MenuItem fx:id="fileExit" mnemonicParsing="false" onAction="#ClickedMenuBar_File_Exit" text="Exit">
                      <accelerator>
                         <KeyCodeCombination alt="DOWN" code="F4" control="UP" meta="UP" shift="UP" shortcut="UP" />
