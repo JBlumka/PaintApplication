@@ -29,7 +29,7 @@ public class PaintController {
     @FXML
     private Slider slider;
     public enum Mode {
-        Cursor, Paint
+        Cursor, Paint, Line, Curve, Rectangle, Circle
     }
     private Mode status = Mode.Paint;
 
@@ -157,6 +157,30 @@ public class PaintController {
     public void ClickedToolBarCursorButton(ActionEvent e) {
         System.out.println("ToolBar Cursor Button Clicked!");
         status = Mode.Cursor;
+    }
+
+    //Click event for ToolBar > LineButton
+    public void ClickedToolBarLineButton(ActionEvent e) {
+        System.out.println("ToolBar Line Button Clicked!");
+        status = Mode.Line;
+    }
+
+    //Click event for ToolBar > CurveButton
+    public void ClickedToolBarCurveButton(ActionEvent e) {
+        System.out.println("ToolBar Curve Button Clicked!");
+        status = Mode.Curve;
+    }
+
+    //Click event for ToolBar > RectangleButton
+    public void ClickedToolBarRectangleButton(ActionEvent e) {
+        System.out.println("ToolBar Line Button Clicked!");
+        status = Mode.Rectangle;
+    }
+
+    //Click event for ToolBar > CircleButton
+    public void ClickedToolBarCircleButton(ActionEvent e) {
+        System.out.println("ToolBar Circle Button Clicked!");
+        status = Mode.Circle;
     }
 
     //END OF TOP TOOLBAR
