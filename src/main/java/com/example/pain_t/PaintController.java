@@ -7,7 +7,6 @@ import java.io.*;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
-import javafx.scene.ImageCursor;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
@@ -108,13 +107,6 @@ public class PaintController {
         SaveAsMethod();
     }
 
-    //Click event for Menu > File > Print
-    public void ClickedMenuBar_File_Print(ActionEvent e) {
-        System.out.println("File/Print Clicked");
-    }
-
-
-
     //Click event for Menu > File > Exit
     public void ClickedMenuBar_File_Exit(ActionEvent e) {
         System.out.println("File/Exit Clicked");
@@ -176,8 +168,6 @@ public class PaintController {
     public void ClickedToolBarLineButton(ActionEvent e) {
         System.out.println("ToolBar Line Button Clicked!");
         status = Mode.Line;
-        //GraphicsContext gc = canvas.getGraphicsContext2D();
-        //gc.strokeLine(0, 0, 100,  100);
     }
 
     //Click event for ToolBar > CurveButton
@@ -203,6 +193,7 @@ public class PaintController {
 
     //CANVAS DRAW METHODS
 
+    //Canvas Mouse Enter Event for changing cursor to Cross hair
     public void CanvasOnMouseEntered(MouseEvent mouseEvent) {
         System.out.println("Mouse Entered Canvas");
 
@@ -216,12 +207,13 @@ public class PaintController {
         }
     }
 
+    //Canvas Mouse Enter Event for changing cursor to Default
     public void CanvasOnMouseExited(MouseEvent mouseEvent) {
         System.out.println("Mouse Exited Canvas");
         canvas.getScene().setCursor(Cursor.DEFAULT);
     }
 
-
+    //Method called when mouse is pressed on canvas - Controls drawing modes
     public void PressedCanvas(javafx.scene.input.MouseEvent mouseEvent) {
         System.out.println("Pressed on Canvas");
         GraphicsContext gc = canvas.getGraphicsContext2D();
@@ -249,6 +241,7 @@ public class PaintController {
 
     }
 
+    //Method called when mouse is dragged on canvas - Controls drawing modes
     public void DraggedCanvas(javafx.scene.input.MouseEvent mouseEvent) {
         System.out.println("Dragged on Canvas");
 
@@ -268,6 +261,7 @@ public class PaintController {
         }
     }
 
+    //Method called when mouse is released from canvas - Controls drawing modes
     public void ReleasedCanvas(javafx.scene.input.MouseEvent mouseEvent) {
         System.out.println("Released on Canvas");
 
