@@ -35,6 +35,8 @@ public class PaintController {
 
     //END OF ATTRIBUTE DECLARATIONS
 
+
+
     //TOP MENUBAR
 
     //Click event for Menu > File > New
@@ -103,7 +105,6 @@ public class PaintController {
     //Click event for Menu > File > Print
     public void ClickedMenuBar_File_Print(ActionEvent e) {
         System.out.println("File/Print Clicked");
-
     }
 
 
@@ -163,6 +164,8 @@ public class PaintController {
     public void ClickedToolBarLineButton(ActionEvent e) {
         System.out.println("ToolBar Line Button Clicked!");
         status = Mode.Line;
+        //GraphicsContext gc = canvas.getGraphicsContext2D();
+        //gc.strokeLine(0, 0, 100,  100);
     }
 
     //Click event for ToolBar > CurveButton
@@ -182,8 +185,9 @@ public class PaintController {
         System.out.println("ToolBar Circle Button Clicked!");
         status = Mode.Circle;
     }
-
     //END OF TOP TOOLBAR
+
+
 
     //CANVAS DRAW METHODS
 
@@ -241,6 +245,8 @@ public class PaintController {
     }
     //END OF CANVAS DRAW METHODS
 
+
+
     //HELPER METHODS
 
     //Method to invoke SaveAs
@@ -283,6 +289,5 @@ public class PaintController {
         canvas.setHeight(canvas.getScene().getWindow().getHeight() - 96); //96 equals height of menu and toolbar
         canvas.getGraphicsContext2D().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
     }
-
     //END OF HELPER METHODS
 }
