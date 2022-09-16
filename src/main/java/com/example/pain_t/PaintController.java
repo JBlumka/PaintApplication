@@ -13,6 +13,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -32,8 +33,17 @@ public class PaintController {
     @FXML
     private Slider slider;
 
+    @FXML
+    private AnchorPane innerAnchorPane;
+
+    Canvas tempCanvas;
+
+    //Line Parameters
+    double drawStartX;
+    double drawStartY;
+
     public enum Mode {
-        Cursor, Paint, Eraser, Line, Curve, Rectangle, Circle
+        Paint, Eraser, ColorPicker, Cursor, Line, DashedLine, Square, Rectangle, Circle, Ellipse
     }
     private Mode status = Mode.Paint;
 
@@ -47,7 +57,9 @@ public class PaintController {
     public void ClickedMenuBar_File_New(ActionEvent e) {
         System.out.println("File/New Clicked");
 
-        clearCanvasMethod();
+        clearCanvasMethod(canvas);
+        canvas.setWidth(canvas.getScene().getWindow().getWidth());
+        canvas.setHeight(canvas.getScene().getWindow().getHeight() - 96); //96 equals height of menu and toolbar
     }
 
     //Click event for Menu > File > Open
@@ -63,7 +75,7 @@ public class PaintController {
         if (selectedFile != null) {
             System.out.println(selectedFile);
             savePath = selectedFile;
-            clearCanvasMethod();
+            clearCanvasMethod(canvas);
             Image image = new Image(selectedFile.toURI().toString());
                 canvas.setWidth(image.getWidth());
                 canvas.setHeight(image.getHeight());
@@ -152,17 +164,25 @@ public class PaintController {
         status = Mode.Paint;
     }
 
+    //Click event for ToolBar > EraserButton
+    public void ClickedToolBarEraserButton(ActionEvent e) {
+        System.out.println("ToolBar Eraser Button Clicked!");
+        status = Mode.Eraser;
+    }
+
+    //Click event for ToolBar > ColorPickerButton
+    public void ClickedToolBarColorPickerButton(ActionEvent e) {
+        System.out.println("ToolBar ColorPicker Button Clicked!");
+        status = Mode.ColorPicker;
+    }
+
     //Click event for ToolBar > CursorButton
     public void ClickedToolBarCursorButton(ActionEvent e) {
         System.out.println("ToolBar Cursor Button Clicked!");
         status = Mode.Cursor;
     }
 
-    //Click event for ToolBar > EraserButton
-    public void ClickedToolBarEraserButton(ActionEvent e) {
-        System.out.println("ToolBar Eraser Button Clicked!");
-        status = Mode.Eraser;
-    }
+
 
     //Click event for ToolBar > LineButton
     public void ClickedToolBarLineButton(ActionEvent e) {
@@ -170,15 +190,21 @@ public class PaintController {
         status = Mode.Line;
     }
 
-    //Click event for ToolBar > CurveButton
-    public void ClickedToolBarCurveButton(ActionEvent e) {
-        System.out.println("ToolBar Curve Button Clicked!");
-        status = Mode.Curve;
+    //Click event for ToolBar > LineButton
+    public void ClickedToolBarDashedLineButton(ActionEvent e) {
+        System.out.println("ToolBar Dashed Line Button Clicked!");
+        status = Mode.DashedLine;
+    }
+
+    //Click event for ToolBar > SquareButton
+    public void ClickedToolBarSquareButton(ActionEvent e) {
+        System.out.println("ToolBar Square Button Clicked!");
+        status = Mode.Square;
     }
 
     //Click event for ToolBar > RectangleButton
     public void ClickedToolBarRectangleButton(ActionEvent e) {
-        System.out.println("ToolBar Line Button Clicked!");
+        System.out.println("ToolBar Rectangle Button Clicked!");
         status = Mode.Rectangle;
     }
 
@@ -186,6 +212,12 @@ public class PaintController {
     public void ClickedToolBarCircleButton(ActionEvent e) {
         System.out.println("ToolBar Circle Button Clicked!");
         status = Mode.Circle;
+    }
+
+    //Click event for ToolBar > CircleButton
+    public void ClickedToolBarEllipseButton(ActionEvent e) {
+        System.out.println("ToolBar Ellipse Button Clicked!");
+        status = Mode.Ellipse;
     }
     //END OF TOP TOOLBAR
 
@@ -217,6 +249,8 @@ public class PaintController {
     public void PressedCanvas(javafx.scene.input.MouseEvent mouseEvent) {
         System.out.println("Pressed on Canvas");
         GraphicsContext gc = canvas.getGraphicsContext2D();
+        tempCanvas = new Canvas(canvas.getWidth(), canvas.getHeight());
+        GraphicsContext tempgc = tempCanvas.getGraphicsContext2D();
 
         switch (status) {
             case Paint:
@@ -235,6 +269,23 @@ public class PaintController {
                 gc.stroke();
                 break;
 
+            case Line:
+            case DashedLine:
+            case Square:
+            case Rectangle:
+            case Circle:
+            case Ellipse:
+                tempgc.setFill(Color.TRANSPARENT);
+                tempgc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+                tempCanvas.toFront();
+                innerAnchorPane.getChildren().add(tempCanvas);
+                drawStartX = mouseEvent.getX();
+                drawStartY = mouseEvent.getY();
+                tempgc.setLineWidth(slider.getValue());
+                tempgc.setStroke(cp.getValue());
+                break;
+
+
             default:
                 break;
         }
@@ -244,6 +295,8 @@ public class PaintController {
     //Method called when mouse is dragged on canvas - Controls drawing modes
     public void DraggedCanvas(javafx.scene.input.MouseEvent mouseEvent) {
         System.out.println("Dragged on Canvas");
+        GraphicsContext tempgc = tempCanvas.getGraphicsContext2D();
+
 
         switch (status) {
             case Paint:
@@ -256,6 +309,39 @@ public class PaintController {
                 gc.moveTo(mouseEvent.getX(), mouseEvent.getY());
                 break;
 
+            case Line:
+                clearCanvasMethod(tempCanvas);
+                tempgc.strokeLine(drawStartX, drawStartY, mouseEvent.getX(), mouseEvent.getY());
+                break;
+
+            case DashedLine:
+                clearCanvasMethod(tempCanvas);
+                tempgc.setLineDashes(5 * slider.getValue());
+                tempgc.setLineDashOffset(5);
+                tempgc.strokeLine(drawStartX, drawStartY, mouseEvent.getX(), mouseEvent.getY());
+                break;
+
+            case Square:
+                clearCanvasMethod(tempCanvas);
+                tempgc.strokeRect(clamp(Math.min(mouseEvent.getX(), drawStartX),(drawStartX - Math.min(Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY()-drawStartY))),(drawStartX + Math.min(Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY()-drawStartY)))),clamp(Math.min(mouseEvent.getY(), drawStartY),(drawStartY - Math.min(Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY()-drawStartY))),(drawStartY + Math.min(Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY()-drawStartY)))),Math.min(Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY()-drawStartY)),Math.min(Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY()-drawStartY)));
+                break;
+
+            case Rectangle:
+                clearCanvasMethod(tempCanvas);
+                tempgc.strokeRect(Math.min(drawStartX, mouseEvent.getX()), Math.min(drawStartY, mouseEvent.getY()),  Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY() - drawStartY));
+                break;
+
+            case Circle:
+                clearCanvasMethod(tempCanvas);
+                tempgc.strokeOval(clamp(Math.min(mouseEvent.getX(), drawStartX),(drawStartX - Math.min(Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY()-drawStartY))),(drawStartX + Math.min(Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY()-drawStartY)))),clamp(Math.min(mouseEvent.getY(), drawStartY),(drawStartY - Math.min(Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY()-drawStartY))),(drawStartY + Math.min(Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY()-drawStartY)))),Math.min(Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY()-drawStartY)),Math.min(Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY()-drawStartY)));
+                break;
+
+            case Ellipse:
+                clearCanvasMethod(tempCanvas);
+                tempgc.strokeOval(Math.min(drawStartX, mouseEvent.getX()), Math.min(drawStartY, mouseEvent.getY()),  Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY() - drawStartY));
+                break;
+
+
             default:
                 break;
         }
@@ -264,14 +350,68 @@ public class PaintController {
     //Method called when mouse is released from canvas - Controls drawing modes
     public void ReleasedCanvas(javafx.scene.input.MouseEvent mouseEvent) {
         System.out.println("Released on Canvas");
+        GraphicsContext gc = canvas.getGraphicsContext2D();
 
         switch (status) {
             case Paint:
             case Eraser:
-                GraphicsContext gc = canvas.getGraphicsContext2D();
                 gc.lineTo(mouseEvent.getX(), mouseEvent.getY());
                 gc.stroke();
                 gc.closePath();
+                break;
+
+            case Line:
+                innerAnchorPane.getChildren().remove(tempCanvas);
+                tempCanvas = null;
+                gc.setLineWidth(slider.getValue());
+                gc.setStroke(cp.getValue());
+                gc.strokeLine(drawStartX, drawStartY, mouseEvent.getX(), mouseEvent.getY());
+                break;
+
+            case DashedLine:
+                innerAnchorPane.getChildren().remove(tempCanvas);
+                tempCanvas = null;
+                gc.setLineWidth(slider.getValue());
+                gc.setStroke(cp.getValue());
+                gc.setLineDashes(5 * slider.getValue());
+                gc.setLineDashOffset(5);
+                gc.strokeLine(drawStartX, drawStartY, mouseEvent.getX(), mouseEvent.getY());
+                gc.setLineDashes(null);
+                gc.setLineDashOffset(0.0);
+                break;
+
+            case Square:
+                innerAnchorPane.getChildren().remove(tempCanvas);
+                tempCanvas = null;
+                gc.setLineWidth(slider.getValue());
+                gc.setStroke(cp.getValue());
+                gc.strokeRect(clamp(Math.min(mouseEvent.getX(), drawStartX),(drawStartX - Math.min(Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY()-drawStartY))),(drawStartX + Math.min(Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY()-drawStartY)))),clamp(Math.min(mouseEvent.getY(), drawStartY),(drawStartY - Math.min(Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY()-drawStartY))),(drawStartY + Math.min(Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY()-drawStartY)))),Math.min(Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY()-drawStartY)),Math.min(Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY()-drawStartY)));
+                break;
+
+
+            case Rectangle:
+                innerAnchorPane.getChildren().remove(tempCanvas);
+                tempCanvas = null;
+                gc.setLineWidth(slider.getValue());
+                gc.setStroke(cp.getValue());
+                gc.strokeRect(Math.min(drawStartX, mouseEvent.getX()), Math.min(drawStartY, mouseEvent.getY()),  Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY() - drawStartY));
+                break;
+
+            case Circle:
+                innerAnchorPane.getChildren().remove(tempCanvas);
+                tempCanvas = null;
+                gc.setLineWidth(slider.getValue());
+                gc.setStroke(cp.getValue());
+                gc.strokeOval(clamp(Math.min(mouseEvent.getX(), drawStartX),(drawStartX - Math.min(Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY()-drawStartY))),(drawStartX + Math.min(Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY()-drawStartY)))),clamp(Math.min(mouseEvent.getY(), drawStartY),(drawStartY - Math.min(Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY()-drawStartY))),(drawStartY + Math.min(Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY()-drawStartY)))),Math.min(Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY()-drawStartY)),Math.min(Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY()-drawStartY)));
+                break;
+
+
+            case Ellipse:
+                innerAnchorPane.getChildren().remove(tempCanvas);
+                tempCanvas = null;
+                gc.setLineWidth(slider.getValue());
+                gc.setStroke(cp.getValue());
+                gc.strokeOval(Math.min(drawStartX, mouseEvent.getX()), Math.min(drawStartY, mouseEvent.getY()),  Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY() - drawStartY));
                 break;
 
             default:
@@ -319,10 +459,12 @@ public class PaintController {
     }
 
     //Method to clear canvas
-    private void clearCanvasMethod() {
-        canvas.setWidth(canvas.getScene().getWindow().getWidth());
-        canvas.setHeight(canvas.getScene().getWindow().getHeight() - 96); //96 equals height of menu and toolbar
-        canvas.getGraphicsContext2D().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+    private void clearCanvasMethod(Canvas canvasToClear) {
+        canvasToClear.getGraphicsContext2D().clearRect(0, 0, canvasToClear.getWidth(), canvasToClear.getHeight());
+    }
+
+    public static double clamp(double val, double min, double max) {
+        return Math.max(min, Math.min(max, val));
     }
     //END OF HELPER METHODS
 }
