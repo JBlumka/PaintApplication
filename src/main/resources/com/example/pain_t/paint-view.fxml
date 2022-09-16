@@ -61,7 +61,7 @@
          <items>
             <GridPane>
               <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="70.0" prefWidth="70.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="105.0" prefWidth="105.0" />
               </columnConstraints>
               <rowConstraints>
                 <RowConstraints minHeight="24.0" prefHeight="24.0" vgrow="SOMETIMES" />
@@ -83,6 +83,21 @@
                         <Insets />
                      </GridPane.margin>
                   </Button>
+                  <Button mnemonicParsing="false" onAction="#ClickedToolBarEraserButton">
+                     <graphic>
+                        <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@Icons/eraser.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <GridPane.margin>
+                        <Insets left="35.0" />
+                     </GridPane.margin>
+                     <tooltip>
+                        <Tooltip text="Eraser" />
+                     </tooltip>
+                  </Button>
                   <Button mnemonicParsing="false" onAction="#ClickedToolBarCursorButton">
                      <graphic>
                         <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
@@ -95,10 +110,10 @@
                         <Tooltip text="Cursor" />
                      </tooltip>
                      <GridPane.margin>
-                        <Insets left="35.0" />
+                        <Insets left="70.0" />
                      </GridPane.margin>
                   </Button>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Tools" translateX="22.0" GridPane.rowIndex="1">
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Tools" translateX="39.0" GridPane.rowIndex="1">
                      <font>
                         <Font size="10.0" />
                      </font>
@@ -141,7 +156,7 @@
                         <Color />
                      </value>
                   </ColorPicker>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Color" translateX="60.0" GridPane.rowIndex="1">
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Color" translateX="57.0" GridPane.rowIndex="1">
                      <font>
                         <Font size="10.0" />
                      </font>
@@ -206,7 +221,10 @@
                         <Tooltip text="Circle Tool" />
                      </tooltip>
                   </Button>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Shapes" translateX="50.0" GridPane.rowIndex="1" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Shapes" translateX="50.0" GridPane.rowIndex="1">
+                     <font>
+                        <Font size="10.0" />
+                     </font></Text>
                </children>
             </GridPane>
             <Separator orientation="VERTICAL" prefHeight="20.0" />
@@ -215,7 +233,7 @@
          <content>
             <AnchorPane prefHeight="1.0" prefWidth="1.0" style="-fx-background-color: white;">
                <children>
-                  <Canvas fx:id="canvas" height="500.0" onMouseDragged="#DraggedCanvas" onMousePressed="#PressedCanvas" onMouseReleased="#ReleasedCanvas" width="1000.0" />
+                  <Canvas fx:id="canvas" height="500.0" onMouseDragged="#DraggedCanvas" onMouseEntered="#CanvasOnMouseEntered" onMouseExited="#CanvasOnMouseExited" onMousePressed="#PressedCanvas" onMouseReleased="#ReleasedCanvas" width="1000.0" />
                </children>
             </AnchorPane>
          </content>

@@ -6,11 +6,15 @@ import java.awt.image.RenderedImage;
 import java.io.*;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
+import javafx.scene.Cursor;
+import javafx.scene.ImageCursor;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -28,8 +32,9 @@ public class PaintController {
     private ColorPicker cp;
     @FXML
     private Slider slider;
+
     public enum Mode {
-        Cursor, Paint, Line, Curve, Rectangle, Circle
+        Cursor, Paint, Eraser, Line, Curve, Rectangle, Circle
     }
     private Mode status = Mode.Paint;
 
@@ -58,6 +63,7 @@ public class PaintController {
         File selectedFile = fileChooser.showOpenDialog(stage);
         if (selectedFile != null) {
             System.out.println(selectedFile);
+            savePath = selectedFile;
             clearCanvasMethod();
             Image image = new Image(selectedFile.toURI().toString());
                 canvas.setWidth(image.getWidth());
@@ -160,6 +166,12 @@ public class PaintController {
         status = Mode.Cursor;
     }
 
+    //Click event for ToolBar > EraserButton
+    public void ClickedToolBarEraserButton(ActionEvent e) {
+        System.out.println("ToolBar Eraser Button Clicked!");
+        status = Mode.Eraser;
+    }
+
     //Click event for ToolBar > LineButton
     public void ClickedToolBarLineButton(ActionEvent e) {
         System.out.println("ToolBar Line Button Clicked!");
@@ -191,14 +203,41 @@ public class PaintController {
 
     //CANVAS DRAW METHODS
 
+    public void CanvasOnMouseEntered(MouseEvent mouseEvent) {
+        System.out.println("Mouse Entered Canvas");
+
+        switch (status) {
+            case Cursor:
+                canvas.getScene().setCursor(Cursor.DEFAULT);
+                break;
+            default:
+                canvas.getScene().setCursor(Cursor.CROSSHAIR);
+                break;
+        }
+    }
+
+    public void CanvasOnMouseExited(MouseEvent mouseEvent) {
+        System.out.println("Mouse Exited Canvas");
+        canvas.getScene().setCursor(Cursor.DEFAULT);
+    }
+
+
     public void PressedCanvas(javafx.scene.input.MouseEvent mouseEvent) {
         System.out.println("Pressed on Canvas");
+        GraphicsContext gc = canvas.getGraphicsContext2D();
 
         switch (status) {
             case Paint:
-                GraphicsContext gc = canvas.getGraphicsContext2D();
                 gc.setLineWidth(slider.getValue());
                 gc.setStroke(cp.getValue());
+                gc.beginPath();
+                gc.moveTo(mouseEvent.getX(), mouseEvent.getY());
+                gc.stroke();
+                break;
+
+            case Eraser:
+                gc.setLineWidth(slider.getValue());
+                gc.setStroke(Color.WHITE);
                 gc.beginPath();
                 gc.moveTo(mouseEvent.getX(), mouseEvent.getY());
                 gc.stroke();
@@ -215,6 +254,7 @@ public class PaintController {
 
         switch (status) {
             case Paint:
+            case Eraser:
                 GraphicsContext gc = canvas.getGraphicsContext2D();
                 gc.lineTo(mouseEvent.getX(), mouseEvent.getY());
                 gc.stroke();
@@ -233,6 +273,7 @@ public class PaintController {
 
         switch (status) {
             case Paint:
+            case Eraser:
                 GraphicsContext gc = canvas.getGraphicsContext2D();
                 gc.lineTo(mouseEvent.getX(), mouseEvent.getY());
                 gc.stroke();
