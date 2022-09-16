@@ -21,29 +21,26 @@ public class PaintApplication extends Application {
         stage.setScene(scene);
         stage.show();
 
-
-
-
+        //Override Close Request to launch custom close dialog window
         stage.setOnCloseRequest(evt -> {
             // prevent window from closing
             evt.consume();
-
             // execute own shutdown procedure
             shutdown(stage);
         });
     }
 
-
     public static void main(String[] args) {
         launch();
     }
 
+    //Custom shutdown dialog message
     private void shutdown(Stage mainWindow) {
-        // you could also use your logout window / whatever here instead
-        Alert alert = new Alert(Alert.AlertType.NONE, "Really close the stage?", ButtonType.YES, ButtonType.NO);
+        Alert alert = new Alert(Alert.AlertType.NONE, "You may have unsaved changes.\nAre you sure you would like to close this application?", ButtonType.YES, ButtonType.NO);
         if (alert.showAndWait().orElse(ButtonType.NO) == ButtonType.YES) {
             // you may need to close other windows or replace this with Platform.exit();
             mainWindow.close();
+            System.exit(0);
         }
     }
 

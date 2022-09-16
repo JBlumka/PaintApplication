@@ -1,20 +1,19 @@
 package com.example.pain_t;
 
 import javafx.event.ActionEvent;
-import javafx.event.Event;
+import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.*;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-
 import javax.imageio.ImageIO;
 import java.io.File;
 
@@ -25,6 +24,15 @@ public class PaintController {
     File savePath = null;
     @FXML
     private Canvas canvas;
+    @FXML
+    private ColorPicker cp;
+    @FXML
+    private Slider slider;
+    public enum Mode {
+        Cursor, Paint
+    }
+    private Mode status = Mode.Paint;
+
     //END OF ATTRIBUTE DECLARATIONS
 
     //TOP MENUBAR
@@ -67,7 +75,16 @@ public class PaintController {
                 WritableImage writableImage = new WritableImage((int) canvas.getWidth(), (int) canvas.getHeight());
                 canvas.snapshot(null, writableImage);
                 RenderedImage renderedImage = SwingFXUtils.fromFXImage(writableImage, null);
-                ImageIO.write(renderedImage, "png", savePath);
+                if(savePath.toString().endsWith(".png")){
+                    ImageIO.write(renderedImage, "png", savePath);
+                }
+                if(savePath.toString().endsWith(".jpg")){
+                    BufferedImage output = new BufferedImage((int) canvas.getWidth(), (int) canvas.getHeight(), BufferedImage.TYPE_3BYTE_BGR); //do all of this extra stuff to remove transparency
+                    int px[] = new int[(int) (canvas.getWidth() * canvas.getHeight())];
+                    ((BufferedImage) renderedImage).getRGB(0, 0, (int) canvas.getWidth(), (int) canvas.getHeight(), px, 0, (int) canvas.getWidth());
+                    output.setRGB(0, 0, (int) canvas.getWidth(), (int) canvas.getHeight(), px, 0, (int) canvas.getWidth());
+                    ImageIO.write(output, "jpg", savePath);
+                }
             } catch (IOException ex) {
                 ex.printStackTrace();
                 System.out.println("Error!");
@@ -83,6 +100,14 @@ public class PaintController {
         SaveAsMethod();
     }
 
+    //Click event for Menu > File > Print
+    public void ClickedMenuBar_File_Print(ActionEvent e) {
+        System.out.println("File/Print Clicked");
+
+    }
+
+
+
     //Click event for Menu > File > Exit
     public void ClickedMenuBar_File_Exit(ActionEvent e) {
         System.out.println("File/Exit Clicked");
@@ -93,14 +118,6 @@ public class PaintController {
                         WindowEvent.WINDOW_CLOSE_REQUEST
                 )
         );
-    }
-
-    //Click event for Menu > Toolbar > Home
-    public void ClickedMenuBar_Home(Event e) { System.out.println("Home Clicked"); }
-
-    //Click event for Menu > Toolbar > View
-    public void ClickedMenuBar_View(ActionEvent e) {
-        System.out.println("View Clicked");
     }
 
     //Click event for Menu > Help > Help
@@ -127,11 +144,19 @@ public class PaintController {
     //END OF TOP MENUBAR
 
 
+
     //TOP TOOLBAR
 
-    //Click event for ToolBar > Button
-    public void ClickedToolBarButton(ActionEvent e) {
-        System.out.println("ToolBar Button Clicked!");
+    //Click event for ToolBar > PaintButton
+    public void ClickedToolBarPaintButton(ActionEvent e) {
+        System.out.println("ToolBar Paint Button Clicked!");
+        status = Mode.Paint;
+    }
+
+    //Click event for ToolBar > CursorButton
+    public void ClickedToolBarCursorButton(ActionEvent e) {
+        System.out.println("ToolBar Cursor Button Clicked!");
+        status = Mode.Cursor;
     }
 
     //END OF TOP TOOLBAR
@@ -140,31 +165,55 @@ public class PaintController {
 
     public void PressedCanvas(javafx.scene.input.MouseEvent mouseEvent) {
         System.out.println("Pressed on Canvas");
-        GraphicsContext gc = canvas.getGraphicsContext2D();
-        gc.setLineWidth(5.0);
-        gc.beginPath();
-        gc.moveTo(mouseEvent.getX(), mouseEvent.getY());
-        gc.stroke();
+
+        switch (status) {
+            case Paint:
+                GraphicsContext gc = canvas.getGraphicsContext2D();
+                gc.setLineWidth(slider.getValue());
+                gc.setStroke(cp.getValue());
+                gc.beginPath();
+                gc.moveTo(mouseEvent.getX(), mouseEvent.getY());
+                gc.stroke();
+                break;
+
+            default:
+                break;
+        }
+
     }
 
     public void DraggedCanvas(javafx.scene.input.MouseEvent mouseEvent) {
         System.out.println("Dragged on Canvas");
-        GraphicsContext gc = canvas.getGraphicsContext2D();
-        gc.lineTo(mouseEvent.getX(), mouseEvent.getY());
-        gc.stroke();
-        gc.closePath();
-        gc.beginPath();
-        gc.moveTo(mouseEvent.getX(), mouseEvent.getY());
+
+        switch (status) {
+            case Paint:
+                GraphicsContext gc = canvas.getGraphicsContext2D();
+                gc.lineTo(mouseEvent.getX(), mouseEvent.getY());
+                gc.stroke();
+                gc.closePath();
+                gc.beginPath();
+                gc.moveTo(mouseEvent.getX(), mouseEvent.getY());
+                break;
+
+            default:
+                break;
+        }
     }
 
     public void ReleasedCanvas(javafx.scene.input.MouseEvent mouseEvent) {
-        System.out.println("Dragged on Canvas");
-        GraphicsContext gc = canvas.getGraphicsContext2D();
-        gc.lineTo(mouseEvent.getX(), mouseEvent.getY());
-        gc.stroke();
-        gc.closePath();
+        System.out.println("Released on Canvas");
 
+        switch (status) {
+            case Paint:
+                GraphicsContext gc = canvas.getGraphicsContext2D();
+                gc.lineTo(mouseEvent.getX(), mouseEvent.getY());
+                gc.stroke();
+                gc.closePath();
+                break;
 
+            default:
+                break;
+        }
     }
     //END OF CANVAS DRAW METHODS
 
@@ -176,7 +225,9 @@ public class PaintController {
         fileChooser.setTitle("Save As");
         Stage stage = (Stage) canvas.getScene().getWindow();
         fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("IMAGE FILE", "*.png"));
+                new FileChooser.ExtensionFilter("PNG file", "*.png"));
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("JPEG file", "*.jpg"));
         File fileDest = fileChooser.showSaveDialog(stage);
         if (fileDest != null) {
             System.out.println(fileDest);
@@ -184,7 +235,16 @@ public class PaintController {
                 WritableImage writableImage = new WritableImage((int) canvas.getWidth(), (int) canvas.getHeight());
                 canvas.snapshot(null, writableImage);
                 RenderedImage renderedImage = SwingFXUtils.fromFXImage(writableImage, null);
-                ImageIO.write(renderedImage, "png", fileDest);
+                if(fileDest.toString().endsWith(".png")){
+                    ImageIO.write(renderedImage, "png", fileDest);
+                }
+                if(fileDest.toString().endsWith(".jpg")){
+                    BufferedImage output = new BufferedImage((int) canvas.getWidth(), (int) canvas.getHeight(), BufferedImage.TYPE_3BYTE_BGR); //do all of this extra stuff to remove transparency
+                    int px[] = new int[(int) (canvas.getWidth() * canvas.getHeight())];
+                    ((BufferedImage) renderedImage).getRGB(0, 0, (int) canvas.getWidth(), (int) canvas.getHeight(), px, 0, (int) canvas.getWidth());
+                    output.setRGB(0, 0, (int) canvas.getWidth(), (int) canvas.getHeight(), px, 0, (int) canvas.getWidth());
+                    ImageIO.write(output, "jpg", fileDest);
+                }
                 savePath = fileDest;
             } catch (IOException ex) {
                 ex.printStackTrace();
@@ -199,10 +259,6 @@ public class PaintController {
         canvas.setHeight(canvas.getScene().getWindow().getHeight() - 96); //96 equals height of menu and toolbar
         canvas.getGraphicsContext2D().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
     }
+
     //END OF HELPER METHODS
-
-
-
-
 }
-
