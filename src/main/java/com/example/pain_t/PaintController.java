@@ -38,7 +38,7 @@ public class PaintController {
 
     Canvas tempCanvas;
 
-    //Line Parameters
+    //Drawing Parameters
     double drawStartX;
     double drawStartY;
 
@@ -54,7 +54,7 @@ public class PaintController {
     //TOP MENUBAR
 
     //Click event for Menu > File > New
-    public void ClickedMenuBar_File_New(ActionEvent e) {
+    public void ClickedMenuBar_File_New() {
         System.out.println("File/New Clicked");
 
         clearCanvasMethod(canvas);
@@ -63,7 +63,7 @@ public class PaintController {
     }
 
     //Click event for Menu > File > Open
-    public void ClickedMenuBar_File_Open(ActionEvent e) throws FileNotFoundException {
+    public void ClickedMenuBar_File_Open() throws FileNotFoundException {
         System.out.println("File/Open Clicked");
 
         FileChooser fileChooser = new FileChooser();
@@ -85,42 +85,25 @@ public class PaintController {
     }
 
     //Click event for Menu > File > Save
-    public void ClickedMenuBar_File_Save(ActionEvent e) {
+    public void ClickedMenuBar_File_Save() {
         System.out.println("File/Save Clicked");
 
         if(savePath != null){
             System.out.print("Save As already occurred.");
-            try {
-                WritableImage writableImage = new WritableImage((int) canvas.getWidth(), (int) canvas.getHeight());
-                canvas.snapshot(null, writableImage);
-                RenderedImage renderedImage = SwingFXUtils.fromFXImage(writableImage, null);
-                if(savePath.toString().endsWith(".png")){
-                    ImageIO.write(renderedImage, "png", savePath);
-                }
-                if(savePath.toString().endsWith(".jpg")){
-                    BufferedImage output = new BufferedImage((int) canvas.getWidth(), (int) canvas.getHeight(), BufferedImage.TYPE_3BYTE_BGR); //do all of this extra stuff to remove transparency
-                    int px[] = new int[(int) (canvas.getWidth() * canvas.getHeight())];
-                    ((BufferedImage) renderedImage).getRGB(0, 0, (int) canvas.getWidth(), (int) canvas.getHeight(), px, 0, (int) canvas.getWidth());
-                    output.setRGB(0, 0, (int) canvas.getWidth(), (int) canvas.getHeight(), px, 0, (int) canvas.getWidth());
-                    ImageIO.write(output, "jpg", savePath);
-                }
-            } catch (IOException ex) {
-                ex.printStackTrace();
-                System.out.println("Error!");
-            }
+            SaveMethod();
         } else {
             SaveAsMethod();
         }
     }
 
     //Click event for Menu > File > SaveAs
-    public void ClickedMenuBar_File_SaveAs(ActionEvent e) {
+    public void ClickedMenuBar_File_SaveAs() {
         System.out.println("File/SaveAs Clicked");
         SaveAsMethod();
     }
 
     //Click event for Menu > File > Exit
-    public void ClickedMenuBar_File_Exit(ActionEvent e) {
+    public void ClickedMenuBar_File_Exit() {
         System.out.println("File/Exit Clicked");
         Stage stage = (Stage) canvas.getScene().getWindow();
         stage.fireEvent(
@@ -132,7 +115,7 @@ public class PaintController {
     }
 
     //Click event for Menu > Help > Help
-    public void ClickedMenuBar_Help_Help(ActionEvent e) {
+    public void ClickedMenuBar_Help_Help() {
         System.out.println("Help/About Clicked");
 
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -143,7 +126,7 @@ public class PaintController {
     }
 
     //Click event for Menu > Help > About
-    public void ClickedMenuBar_Help_About(ActionEvent e) {
+    public void ClickedMenuBar_Help_About() {
         System.out.println("Help/About Clicked");
 
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -260,6 +243,10 @@ public class PaintController {
                 gc.moveTo(mouseEvent.getX(), mouseEvent.getY());
                 gc.stroke();
                 break;
+
+            case ColorPicker:
+                WritableImage snap = gc.getCanvas().snapshot(null, null);
+                cp.setValue(snap.getPixelReader().getColor((int)mouseEvent.getX(), (int)mouseEvent.getY()));
 
             case Eraser:
                 gc.setLineWidth(slider.getValue());
@@ -423,6 +410,29 @@ public class PaintController {
 
 
     //HELPER METHODS
+
+    public void SaveMethod() {
+        try {
+            WritableImage writableImage = new WritableImage((int) canvas.getWidth(), (int) canvas.getHeight());
+            canvas.snapshot(null, writableImage);
+            RenderedImage renderedImage = SwingFXUtils.fromFXImage(writableImage, null);
+            if (savePath.toString().endsWith(".png")) {
+                ImageIO.write(renderedImage, "png", savePath);
+            }
+            if (savePath.toString().endsWith(".jpg")) {
+                BufferedImage output = new BufferedImage((int) canvas.getWidth(), (int) canvas.getHeight(), BufferedImage.TYPE_3BYTE_BGR); //do all of this extra stuff to remove transparency
+                int px[] = new int[(int) (canvas.getWidth() * canvas.getHeight())];
+                ((BufferedImage) renderedImage).getRGB(0, 0, (int) canvas.getWidth(), (int) canvas.getHeight(), px, 0, (int) canvas.getWidth());
+                output.setRGB(0, 0, (int) canvas.getWidth(), (int) canvas.getHeight(), px, 0, (int) canvas.getWidth());
+                ImageIO.write(output, "jpg", savePath);
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            System.out.println("Error!");
+        }
+    }
+
+
 
     //Method to invoke SaveAs
     public void SaveAsMethod() {

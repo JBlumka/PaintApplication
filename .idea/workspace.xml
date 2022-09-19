@@ -6,8 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="f1879801-718a-481e-9d00-4e43f4ce0018" name="Changes" comment="Commit">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/pain_t/PaintApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/pain_t/PaintApplication.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/pain_t/PaintController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/pain_t/PaintController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/pain_t/paint-view.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/example/pain_t/paint-view.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -156,7 +156,21 @@
       <option name="project" value="LOCAL" />
       <updated>1663311475476</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="Commit">
+      <created>1663367608007</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1663367608007</updated>
+    </task>
+    <task id="LOCAL-00016" summary="Commit">
+      <created>1663367622889</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1663367622889</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

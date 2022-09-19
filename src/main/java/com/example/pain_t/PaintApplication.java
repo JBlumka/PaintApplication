@@ -38,7 +38,6 @@ public class PaintApplication extends Application {
     private void shutdown(Stage mainWindow) {
         Alert alert = new Alert(Alert.AlertType.NONE, "You may have unsaved changes.\nAre you sure you would like to close this application?", ButtonType.YES, ButtonType.NO);
         if (alert.showAndWait().orElse(ButtonType.NO) == ButtonType.YES) {
-            // you may need to close other windows or replace this with Platform.exit();
             mainWindow.close();
             System.exit(0);
         }
