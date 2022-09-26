@@ -57,7 +57,6 @@
         <Menu mnemonicParsing="false" text="Help">
             <MenuItem mnemonicParsing="false" onAction="#ClickedMenuBar_Help_Help" text="Help" />
             <MenuItem mnemonicParsing="false" onAction="#ClickedMenuBar_Help_About" text="About" />
-         <MenuItem mnemonicParsing="false" text="Unspecified Action" />
         </Menu>
     </MenuBar>
     <ToolBar layoutY="32.0" prefHeight="64.0" prefWidth="600.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
