@@ -6,9 +6,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
-
-import javax.swing.*;
-import java.awt.*;
 import java.io.IOException;
 import java.util.Optional;
 
@@ -42,6 +39,8 @@ public class PaintApplication extends Application {
             // execute own shutdown procedure
             shutdown(stage);
         });
+
+
     }
 
     public static void main(String[] args) {
@@ -64,8 +63,6 @@ public class PaintApplication extends Application {
                 } catch (Exception e) {
                     System.out.println("Error executing controller.saveAllTabs()");
                 }
-
-
                 System.out.println("Clicked YES");
                 mainWindow.close();
                 System.exit(0);
@@ -73,10 +70,9 @@ public class PaintApplication extends Application {
                 System.out.println("Clicked NO");
                 mainWindow.close();
                 System.exit(0);
-            } else if (optionClicked.get().equals(ButtonType.CANCEL)) {
+            } else {
                 System.out.println("Clicked Cancel");
             }
         }
     }
-
 }

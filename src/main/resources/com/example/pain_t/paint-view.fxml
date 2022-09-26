@@ -23,27 +23,32 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="ap" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="858.0" prefWidth="1002.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.pain_t.PaintController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="858.0" prefWidth="1002.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.pain_t.PaintController">
    <children>
       <MenuBar prefHeight="32.0" prefWidth="600.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
-              <MenuItem fx:id="fileNew" mnemonicParsing="false" onAction="#ClickedMenuBar_File_New" text="New">
+              <MenuItem mnemonicParsing="false" onAction="#ClickedMenuBar_File_New" text="New">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="N" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator></MenuItem>
-                  <MenuItem fx:id="fileOpen" mnemonicParsing="false" onAction="#ClickedMenuBar_File_Open" text="Open">
+                  <MenuItem mnemonicParsing="false" onAction="#ClickedMenuBar_File_Open" text="Open">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator></MenuItem>
                   <MenuItem mnemonicParsing="false" onAction="#ClickedMenuBar_File_Clear" text="Clear Canvas" />
-                  <MenuItem fx:id="fileSave" mnemonicParsing="false" onAction="#ClickedMenuBar_File_Save" text="Save">
+                  <MenuItem mnemonicParsing="false" onAction="#ClickedMenuBar_File_Save" text="Save">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator></MenuItem>
-                  <MenuItem fx:id="fileSaveAs" mnemonicParsing="false" onAction="#ClickedMenuBar_File_SaveAs" text="Save As" />
-                  <MenuItem fx:id="fileExit" mnemonicParsing="false" onAction="#ClickedMenuBar_File_Exit" text="Exit">
+                  <MenuItem mnemonicParsing="false" onAction="#ClickedMenuBar_File_SaveAs" text="Save As" />
+                  <MenuItem mnemonicParsing="false" onAction="#ClickedMenuBar_File_SaveAll" text="Save All">
+                     <accelerator>
+                        <KeyCodeCombination alt="DOWN" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator>
+                  </MenuItem>
+                  <MenuItem mnemonicParsing="false" onAction="#ClickedMenuBar_File_Exit" text="Exit">
                      <accelerator>
                         <KeyCodeCombination alt="DOWN" code="F4" control="UP" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator></MenuItem>
@@ -57,7 +62,7 @@
             </Menu>
         </menus>
       </MenuBar>
-      <ToolBar fx:id="HomeToolbar" layoutY="32.0" prefHeight="64.0" prefWidth="600.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+      <ToolBar layoutY="32.0" prefHeight="64.0" prefWidth="600.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
          <items>
             <GridPane>
               <columnConstraints>

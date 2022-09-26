@@ -1,8 +1,6 @@
 package com.example.pain_t;
 
-import javafx.event.ActionEvent;
 import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
 import java.io.*;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
@@ -20,7 +18,8 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javax.imageio.ImageIO;
 import java.io.File;
-
+import java.util.Objects;
+import java.util.Optional;
 
 public class PaintController {
 
@@ -37,7 +36,6 @@ public class PaintController {
 
     @FXML
     private TabPane tabPane;
-
 
     Canvas tempCanvas;
 
@@ -56,7 +54,7 @@ public class PaintController {
 
 
 
-    //TOP MENUBAR
+    //TOP MENU BAR
 
     //Click event for Menu > File > New
     public void ClickedMenuBar_File_New() {
@@ -65,14 +63,14 @@ public class PaintController {
     }
 
     //Click event for Menu > File > Open
-    public void ClickedMenuBar_File_Open() throws FileNotFoundException {
+    public void ClickedMenuBar_File_Open() {
         System.out.println("File/Open Clicked");
 
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open");
         Stage stage = (Stage) getCurrentCanvas().getScene().getWindow();
         fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("IMAGE FILES", "*.jpg", "*.png", "*.gif"));
+                new FileChooser.ExtensionFilter("IMAGE FILES", "*.jpg", "*.png", "*.bmp", "*.gif"));
         File selectedFile = fileChooser.showOpenDialog(stage);
         if (selectedFile != null) {
             System.out.println(selectedFile);
@@ -89,7 +87,7 @@ public class PaintController {
         }
     }
 
-
+    //Click event for Menu > File > Clear
     public void ClickedMenuBar_File_Clear() {
         System.out.println("File/Clear Clicked");
         clearCanvasMethod(getCurrentCanvas());
@@ -115,6 +113,11 @@ public class PaintController {
         SaveAsMethod(getCurrentCanvas());
         Tab currentTab = tabPane.getSelectionModel().getSelectedItem();
         currentTab.setText(getCurrentCanvas().getSavePath().getName());
+    }
+
+    public void ClickedMenuBar_File_SaveAll() {
+        System.out.println("File/SaveAll Clicked");
+        saveAllTabs();
     }
 
     //Click event for Menu > File > Exit
@@ -147,90 +150,89 @@ public class PaintController {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Information Dialog");
         alert.setHeaderText(null);
-        alert.setContentText("Welcome to Pain(t) Version 3.14\n\nIcons sourced from https://icons8.com/");
+        alert.setContentText("Welcome to Pain(t) Version 3.141\n\nIcons sourced from https://icons8.com/");
         alert.showAndWait();
     }
-    //END OF TOP MENUBAR
+    //END OF TOP MENU BAR
 
 
 
     //TOP TOOLBAR
 
-
-    public void WidthDimInputChanged(ActionEvent e) {
+    //Click event for Canvas Dimension Width text field
+    public void WidthDimInputChanged() {
         System.out.println("ToolBar CanvasDim Width Entered");
-        if(Double.valueOf(WidthDimTextField.getCharacters().toString()) > 1.0){
-            getCurrentCanvas().setWidth(Double.valueOf(WidthDimTextField.getCharacters().toString())); //TODO Change so that canvas scales?
+        if(Double.parseDouble(WidthDimTextField.getCharacters().toString()) > 1.0){
+            getCurrentCanvas().setWidth(Double.parseDouble(WidthDimTextField.getCharacters().toString())); //TODO Change so that canvas scales?
         }
         WidthDimTextField.setText(Double.toString(getCurrentCanvas().getWidth()));
     }
 
-    public void HeightDimInputChanged(ActionEvent e) {
+    //Click event for Canvas Dimension Height text field
+    public void HeightDimInputChanged() {
         System.out.println("ToolBar CanvasDim Height Entered");
-        if(Double.valueOf(HeightDimTextField.getCharacters().toString()) > 1.0){
-            getCurrentCanvas().setHeight(Double.valueOf(HeightDimTextField.getCharacters().toString())); //TODO Change so that canvas scales?
+        if(Double.parseDouble(HeightDimTextField.getCharacters().toString()) > 1.0){
+            getCurrentCanvas().setHeight(Double.parseDouble(HeightDimTextField.getCharacters().toString())); //TODO Change so that canvas scales?
         }
         HeightDimTextField.setText(Double.toString(getCurrentCanvas().getHeight()));
     }
 
     //Click event for ToolBar > PaintButton
-    public void ClickedToolBarPaintButton(ActionEvent e) {
+    public void ClickedToolBarPaintButton() {
         System.out.println("ToolBar Paint Button Clicked!");
         status = Mode.Paint;
     }
 
     //Click event for ToolBar > EraserButton
-    public void ClickedToolBarEraserButton(ActionEvent e) {
+    public void ClickedToolBarEraserButton() {
         System.out.println("ToolBar Eraser Button Clicked!");
         status = Mode.Eraser;
     }
 
     //Click event for ToolBar > ColorPickerButton
-    public void ClickedToolBarColorPickerButton(ActionEvent e) {
+    public void ClickedToolBarColorPickerButton() {
         System.out.println("ToolBar ColorPicker Button Clicked!");
         status = Mode.ColorPicker;
     }
 
     //Click event for ToolBar > CursorButton
-    public void ClickedToolBarCursorButton(ActionEvent e) {
+    public void ClickedToolBarCursorButton() {
         System.out.println("ToolBar Cursor Button Clicked!");
         status = Mode.Cursor;
     }
 
-
-
     //Click event for ToolBar > LineButton
-    public void ClickedToolBarLineButton(ActionEvent e) {
+    public void ClickedToolBarLineButton() {
         System.out.println("ToolBar Line Button Clicked!");
         status = Mode.Line;
     }
 
     //Click event for ToolBar > LineButton
-    public void ClickedToolBarDashedLineButton(ActionEvent e) {
+    public void ClickedToolBarDashedLineButton() {
         System.out.println("ToolBar Dashed Line Button Clicked!");
         status = Mode.DashedLine;
     }
 
     //Click event for ToolBar > SquareButton
-    public void ClickedToolBarSquareButton(ActionEvent e) {
+    public void ClickedToolBarSquareButton() {
         System.out.println("ToolBar Square Button Clicked!");
         status = Mode.Square;
     }
 
     //Click event for ToolBar > RectangleButton
-    public void ClickedToolBarRectangleButton(ActionEvent e) {
+    public void ClickedToolBarRectangleButton() {
         System.out.println("ToolBar Rectangle Button Clicked!");
         status = Mode.Rectangle;
     }
 
     //Click event for ToolBar > CircleButton
-    public void ClickedToolBarCircleButton(ActionEvent e) {
+    public void ClickedToolBarCircleButton() {
         System.out.println("ToolBar Circle Button Clicked!");
         status = Mode.Circle;
     }
 
     //Click event for ToolBar > CircleButton
-    public void ClickedToolBarEllipseButton(ActionEvent e) {
+    public void ClickedToolBarEllipseButton() {
         System.out.println("ToolBar Ellipse Button Clicked!");
         status = Mode.Ellipse;
     }
@@ -244,13 +246,10 @@ public class PaintController {
     public void CanvasOnMouseEntered(MouseEvent mouseEvent) {
         System.out.println("Mouse Entered Canvas");
 
-        switch (status) {
-            case Cursor:
-                getCurrentCanvas().getScene().setCursor(Cursor.DEFAULT);
-                break;
-            default:
-                getCurrentCanvas().getScene().setCursor(Cursor.CROSSHAIR);
-                break;
+        if (status == Mode.Cursor) {
+            getCurrentCanvas().getScene().setCursor(Cursor.DEFAULT);
+        } else {
+            getCurrentCanvas().getScene().setCursor(Cursor.CROSSHAIR);
         }
     }
 
@@ -265,7 +264,7 @@ public class PaintController {
         System.out.println("Pressed on Canvas");
         GraphicsContext gc = getCurrentCanvas().getGraphicsContext2D();
         tempCanvas = new Canvas(getCurrentCanvas().getWidth(), getCurrentCanvas().getHeight());
-        GraphicsContext tempgc = tempCanvas.getGraphicsContext2D();
+        GraphicsContext temp_gc = tempCanvas.getGraphicsContext2D();
 
         switch (status) {
             case Paint:
@@ -294,14 +293,14 @@ public class PaintController {
             case Rectangle:
             case Circle:
             case Ellipse:
-                tempgc.setFill(Color.TRANSPARENT);
-                tempgc.fillRect(0, 0, getCurrentCanvas().getWidth(), getCurrentCanvas().getHeight());
+                temp_gc.setFill(Color.TRANSPARENT);
+                temp_gc.fillRect(0, 0, getCurrentCanvas().getWidth(), getCurrentCanvas().getHeight());
                 tempCanvas.toFront();
                 ((AnchorPane)getCurrentCanvas().getParent()).getChildren().add(tempCanvas);
                 drawStartX = mouseEvent.getX();
                 drawStartY = mouseEvent.getY();
-                tempgc.setLineWidth(slider.getValue());
-                tempgc.setStroke(cp.getValue());
+                temp_gc.setLineWidth(slider.getValue());
+                temp_gc.setStroke(cp.getValue());
                 break;
 
 
@@ -314,7 +313,7 @@ public class PaintController {
     //Method called when mouse is dragged on canvas - Controls drawing modes
     public void DraggedCanvas(javafx.scene.input.MouseEvent mouseEvent) {
         System.out.println("Dragged on Canvas");
-        GraphicsContext tempgc = tempCanvas.getGraphicsContext2D();
+        GraphicsContext temp_gc = tempCanvas.getGraphicsContext2D();
 
 
         switch (status) {
@@ -330,34 +329,34 @@ public class PaintController {
 
             case Line:
                 clearCanvasMethod(tempCanvas);
-                tempgc.strokeLine(drawStartX, drawStartY, mouseEvent.getX(), mouseEvent.getY());
+                temp_gc.strokeLine(drawStartX, drawStartY, mouseEvent.getX(), mouseEvent.getY());
                 break;
 
             case DashedLine:
                 clearCanvasMethod(tempCanvas);
-                tempgc.setLineDashes(5 * slider.getValue());
-                tempgc.setLineDashOffset(5);
-                tempgc.strokeLine(drawStartX, drawStartY, mouseEvent.getX(), mouseEvent.getY());
+                temp_gc.setLineDashes(5 * slider.getValue());
+                temp_gc.setLineDashOffset(5);
+                temp_gc.strokeLine(drawStartX, drawStartY, mouseEvent.getX(), mouseEvent.getY());
                 break;
 
             case Square:
                 clearCanvasMethod(tempCanvas);
-                tempgc.strokeRect(clamp(Math.min(mouseEvent.getX(), drawStartX),(drawStartX - Math.min(Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY()-drawStartY))),(drawStartX + Math.min(Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY()-drawStartY)))),clamp(Math.min(mouseEvent.getY(), drawStartY),(drawStartY - Math.min(Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY()-drawStartY))),(drawStartY + Math.min(Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY()-drawStartY)))),Math.min(Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY()-drawStartY)),Math.min(Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY()-drawStartY)));
+                temp_gc.strokeRect(clamp(Math.min(mouseEvent.getX(), drawStartX),(drawStartX - Math.min(Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY()-drawStartY))),(drawStartX + Math.min(Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY()-drawStartY)))),clamp(Math.min(mouseEvent.getY(), drawStartY),(drawStartY - Math.min(Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY()-drawStartY))),(drawStartY + Math.min(Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY()-drawStartY)))),Math.min(Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY()-drawStartY)),Math.min(Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY()-drawStartY)));
                 break;
 
             case Rectangle:
                 clearCanvasMethod(tempCanvas);
-                tempgc.strokeRect(Math.min(drawStartX, mouseEvent.getX()), Math.min(drawStartY, mouseEvent.getY()),  Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY() - drawStartY));
+                temp_gc.strokeRect(Math.min(drawStartX, mouseEvent.getX()), Math.min(drawStartY, mouseEvent.getY()),  Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY() - drawStartY));
                 break;
 
             case Circle:
                 clearCanvasMethod(tempCanvas);
-                tempgc.strokeOval(clamp(Math.min(mouseEvent.getX(), drawStartX),(drawStartX - Math.min(Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY()-drawStartY))),(drawStartX + Math.min(Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY()-drawStartY)))),clamp(Math.min(mouseEvent.getY(), drawStartY),(drawStartY - Math.min(Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY()-drawStartY))),(drawStartY + Math.min(Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY()-drawStartY)))),Math.min(Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY()-drawStartY)),Math.min(Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY()-drawStartY)));
+                temp_gc.strokeOval(clamp(Math.min(mouseEvent.getX(), drawStartX),(drawStartX - Math.min(Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY()-drawStartY))),(drawStartX + Math.min(Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY()-drawStartY)))),clamp(Math.min(mouseEvent.getY(), drawStartY),(drawStartY - Math.min(Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY()-drawStartY))),(drawStartY + Math.min(Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY()-drawStartY)))),Math.min(Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY()-drawStartY)),Math.min(Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY()-drawStartY)));
                 break;
 
             case Ellipse:
                 clearCanvasMethod(tempCanvas);
-                tempgc.strokeOval(Math.min(drawStartX, mouseEvent.getX()), Math.min(drawStartY, mouseEvent.getY()),  Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY() - drawStartY));
+                temp_gc.strokeOval(Math.min(drawStartX, mouseEvent.getX()), Math.min(drawStartY, mouseEvent.getY()),  Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY() - drawStartY));
                 break;
 
 
@@ -395,7 +394,7 @@ public class PaintController {
                 gc.setLineDashes(5 * slider.getValue());
                 gc.setLineDashOffset(5);
                 gc.strokeLine(drawStartX, drawStartY, mouseEvent.getX(), mouseEvent.getY());
-                gc.setLineDashes(null);
+                gc.setLineDashes(0.0);
                 gc.setLineDashOffset(0.0);
                 break;
 
@@ -443,18 +442,26 @@ public class PaintController {
 
     //HELPER METHODS
 
+    //Helper method for saving a canvas
     public void SaveMethod(CustomCanvas canvas) {
         try {
             WritableImage writableImage = new WritableImage((int) canvas.getWidth(), (int) canvas.getHeight());
             canvas.snapshot(null, writableImage);
-            RenderedImage renderedImage = SwingFXUtils.fromFXImage(writableImage, null);
+            BufferedImage renderedImage = SwingFXUtils.fromFXImage(writableImage, null);
             if (canvas.getSavePath().toString().endsWith(".png")) {
                 ImageIO.write(renderedImage, "png", canvas.getSavePath());
             }
+            if (canvas.getSavePath().toString().endsWith(".bmp")) {
+                BufferedImage output = new BufferedImage((int) canvas.getWidth(), (int) canvas.getHeight(), BufferedImage.TYPE_INT_RGB); //do all of this extra stuff to remove transparency
+                int[] px = new int[(int) (canvas.getWidth() * canvas.getHeight())];
+                renderedImage.getRGB(0, 0, (int) canvas.getWidth(), (int) canvas.getHeight(), px, 0, (int) canvas.getWidth());
+                output.setRGB(0, 0, (int) canvas.getWidth(), (int) canvas.getHeight(), px, 0, (int) canvas.getWidth());
+                ImageIO.write(output, "bmp", canvas.getSavePath());
+            }
             if (canvas.getSavePath().toString().endsWith(".jpg")) {
                 BufferedImage output = new BufferedImage((int) canvas.getWidth(), (int) canvas.getHeight(), BufferedImage.TYPE_3BYTE_BGR); //do all of this extra stuff to remove transparency
-                int px[] = new int[(int) (canvas.getWidth() * canvas.getHeight())];
-                ((BufferedImage) renderedImage).getRGB(0, 0, (int) canvas.getWidth(), (int) canvas.getHeight(), px, 0, (int) canvas.getWidth());
+                int[] px = new int[(int) (canvas.getWidth() * canvas.getHeight())];
+                renderedImage.getRGB(0, 0, (int) canvas.getWidth(), (int) canvas.getHeight(), px, 0, (int) canvas.getWidth());
                 output.setRGB(0, 0, (int) canvas.getWidth(), (int) canvas.getHeight(), px, 0, (int) canvas.getWidth());
                 ImageIO.write(output, "jpg", canvas.getSavePath());
             }
@@ -466,7 +473,7 @@ public class PaintController {
 
 
 
-    //Method to invoke SaveAs
+    //Helper method to invoke SaveAs
     public void SaveAsMethod(CustomCanvas canvas) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Save As");
@@ -475,20 +482,29 @@ public class PaintController {
                 new FileChooser.ExtensionFilter("PNG file", "*.png"));
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("JPEG file", "*.jpg"));
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("BMP file", "*.bmp"));
         File fileDest = fileChooser.showSaveDialog(stage);
         if (fileDest != null) {
             System.out.println(fileDest);
             try {
                 WritableImage writableImage = new WritableImage((int) canvas.getWidth(), (int) canvas.getHeight());
                 canvas.snapshot(null, writableImage);
-                RenderedImage renderedImage = SwingFXUtils.fromFXImage(writableImage, null);
+                BufferedImage renderedImage = SwingFXUtils.fromFXImage(writableImage, null);
                 if(fileDest.toString().endsWith(".png")){
                     ImageIO.write(renderedImage, "png", fileDest);
                 }
+                if(fileDest.toString().endsWith(".bmp")){
+                    BufferedImage output = new BufferedImage((int) canvas.getWidth(), (int) canvas.getHeight(), BufferedImage.TYPE_INT_RGB); //do all of this extra stuff to remove transparency
+                    int[] px = new int[(int) (canvas.getWidth() * canvas.getHeight())];
+                    renderedImage.getRGB(0, 0, (int) canvas.getWidth(), (int) canvas.getHeight(), px, 0, (int) canvas.getWidth());
+                    output.setRGB(0, 0, (int) canvas.getWidth(), (int) canvas.getHeight(), px, 0, (int) canvas.getWidth());
+                    ImageIO.write(output, "bmp", canvas.getSavePath());
+                }
                 if(fileDest.toString().endsWith(".jpg")){
                     BufferedImage output = new BufferedImage((int) canvas.getWidth(), (int) canvas.getHeight(), BufferedImage.TYPE_3BYTE_BGR); //do all of this extra stuff to remove transparency
-                    int px[] = new int[(int) (canvas.getWidth() * canvas.getHeight())];
-                    ((BufferedImage) renderedImage).getRGB(0, 0, (int) canvas.getWidth(), (int) canvas.getHeight(), px, 0, (int) canvas.getWidth());
+                    int[] px = new int[(int) (canvas.getWidth() * canvas.getHeight())];
+                    renderedImage.getRGB(0, 0, (int) canvas.getWidth(), (int) canvas.getHeight(), px, 0, (int) canvas.getWidth());
                     output.setRGB(0, 0, (int) canvas.getWidth(), (int) canvas.getHeight(), px, 0, (int) canvas.getWidth());
                     ImageIO.write(output, "jpg", fileDest);
                 }
@@ -500,33 +516,44 @@ public class PaintController {
         }
     }
 
-    //Method to clear canvas
+    //Helper method to clear canvas
     private void clearCanvasMethod(Canvas canvasToClear) {
         canvasToClear.getGraphicsContext2D().clearRect(0, 0, canvasToClear.getWidth(), canvasToClear.getHeight());
     }
 
+    //Helper method to clamp value between a minimum and maximum (for circle/square tools)
     public static double clamp(double val, double min, double max) {
         return Math.max(min, Math.min(max, val));
     }
 
+    //Helper method to obtain the current tab's canvas
     private CustomCanvas getCurrentCanvas () {
         Tab currentTab = tabPane.getSelectionModel().getSelectedItem();
         ScrollPane currentSP = (ScrollPane) currentTab.getContent();
         AnchorPane currentAP = (AnchorPane) currentSP.getContent();
-        CustomCanvas currentCanvas = (CustomCanvas) currentAP.getChildren().get(0);
-        return currentCanvas;
+        return (CustomCanvas) currentAP.getChildren().get(0);
     }
 
+    //Helper method to create a new tab
     void createNewCanvasTab() {
         Tab newTab = new Tab();
         newTab.setText("Untitled " + tabIterator);
         tabIterator++;
         tabPane.getTabs().add(newTab);
 
+        //Override Close Request to launch custom close dialog window
+        newTab.setOnCloseRequest(e -> {
+            newTab.getTabPane().setTabDragPolicy(TabPane.TabDragPolicy.FIXED);
+            //prevent window from closing
+            e.consume();
+            // execute own shutdown procedure
+            launchTabCloseConfirmDialog(newTab);
+        });
+
         ScrollPane scrollPane = new ScrollPane();
         scrollPane.setPrefWidth(1);
         scrollPane.setPrefHeight(1);
-        scrollPane.getStylesheets().add(getClass().getResource("scrollpaneStyle.css").toExternalForm());
+        scrollPane.getStylesheets().add(Objects.requireNonNull(getClass().getResource("scrollpaneStyle.css")).toExternalForm());
         newTab.setContent(scrollPane);
 
         AnchorPane newInnerAnchorPane = new AnchorPane();
@@ -537,21 +564,11 @@ public class PaintController {
 
 
         CustomCanvas newCanvas = new CustomCanvas(Math.round(scrollPane.getScene().getWindow().getWidth()), Math.round(scrollPane.getScene().getWindow().getHeight() - 96));
-        newCanvas.setOnMouseEntered((MouseEvent event) -> {
-            CanvasOnMouseEntered(event);
-        });
-        newCanvas.setOnMouseExited((MouseEvent event) -> {
-            CanvasOnMouseExited(event);
-        });
-        newCanvas.setOnMousePressed((MouseEvent event) -> {
-            PressedCanvas(event);
-        });
-        newCanvas.setOnMouseDragged((MouseEvent event) -> {
-            DraggedCanvas(event);
-        });
-        newCanvas.setOnMouseReleased((MouseEvent event) -> {
-            ReleasedCanvas(event);
-        });
+        newCanvas.setOnMouseEntered(this::CanvasOnMouseEntered);
+        newCanvas.setOnMouseExited(this::CanvasOnMouseExited);
+        newCanvas.setOnMousePressed(this::PressedCanvas);
+        newCanvas.setOnMouseDragged(this::DraggedCanvas);
+        newCanvas.setOnMouseReleased(this::ReleasedCanvas);
         newCanvas.toFront();
         newInnerAnchorPane.getChildren().add(newCanvas);
 
@@ -561,11 +578,41 @@ public class PaintController {
 
     }
 
+    //Helper method to launch closing dialog on closed tabs
+    private void launchTabCloseConfirmDialog(Tab closingTab) {
+        Alert alert = new Alert(Alert.AlertType.NONE, "Do you want to save changes to this tab before closing?\n", ButtonType.YES, ButtonType.NO, ButtonType.CANCEL);
+        alert.setTitle("Pain(t)");
+        Optional<ButtonType> optionClicked = alert.showAndWait();
+        if(optionClicked.isPresent()){
+            if(optionClicked.get().equals(ButtonType.YES)) {
+                CustomCanvas canvasToSave = ((CustomCanvas)((AnchorPane)((ScrollPane)closingTab.getContent()).getContent()).getChildren().get(0));
+                if(canvasToSave.getSavePath() != null){
+                    System.out.print("Save As already occurred.");
+                    SaveMethod(canvasToSave);
+                } else {
+                    tabPane.getSelectionModel().select(closingTab);
+                    SaveAsMethod(canvasToSave);
+                }
+                System.out.println("Clicked YES");
+                tabPane.getTabs().remove(closingTab);
+
+            } else if (optionClicked.get().equals(ButtonType.NO)) {
+                System.out.println("Clicked NO");
+                tabPane.getTabs().remove(closingTab);
+            } else {
+                System.out.println("Clicked Cancel");
+            }
+        }
+
+    }
+
+    //Helper method to set canvas dimension text fields
     void setCanvasDimText() {
         WidthDimTextField.setText(String.valueOf(getCurrentCanvas().getWidth()));
         HeightDimTextField.setText(String.valueOf(getCurrentCanvas().getHeight()));
     }
 
+    //Helper method to save all tabs
     void saveAllTabs() {
         for(Tab i: tabPane.getTabs()){
             CustomCanvas canvasToSave = ((CustomCanvas)((AnchorPane)((ScrollPane)i.getContent()).getContent()).getChildren().get(0));
@@ -579,6 +626,7 @@ public class PaintController {
         }
     }
 
+    //Helper method for initialization on start-up
     void startUpMethod() {
         System.out.println("Hello World!");
 
