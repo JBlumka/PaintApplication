@@ -24,300 +24,266 @@
 <?import javafx.scene.text.Text?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="858.0" prefWidth="1002.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.pain_t.PaintController">
-   <children>
-      <MenuBar prefHeight="32.0" prefWidth="600.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
-        <menus>
-          <Menu mnemonicParsing="false" text="File">
-            <items>
-              <MenuItem mnemonicParsing="false" onAction="#ClickedMenuBar_File_New" text="New">
-                     <accelerator>
-                        <KeyCodeCombination alt="UP" code="N" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-                     </accelerator></MenuItem>
-                  <MenuItem mnemonicParsing="false" onAction="#ClickedMenuBar_File_Open" text="Open">
-                     <accelerator>
-                        <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-                     </accelerator></MenuItem>
-                  <MenuItem mnemonicParsing="false" onAction="#ClickedMenuBar_File_Clear" text="Clear Canvas" />
-                  <MenuItem mnemonicParsing="false" onAction="#ClickedMenuBar_File_Save" text="Save">
-                     <accelerator>
-                        <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-                     </accelerator></MenuItem>
-                  <MenuItem mnemonicParsing="false" onAction="#ClickedMenuBar_File_SaveAs" text="Save As" />
-                  <MenuItem mnemonicParsing="false" onAction="#ClickedMenuBar_File_SaveAll" text="Save All">
-                     <accelerator>
-                        <KeyCodeCombination alt="DOWN" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-                     </accelerator>
-                  </MenuItem>
-                  <MenuItem mnemonicParsing="false" onAction="#ClickedMenuBar_File_Exit" text="Exit">
-                     <accelerator>
-                        <KeyCodeCombination alt="DOWN" code="F4" control="UP" meta="UP" shift="UP" shortcut="UP" />
-                     </accelerator></MenuItem>
-            </items>
-          </Menu>
-            <Menu mnemonicParsing="false" text="Help">
-              <items>
-                  <MenuItem mnemonicParsing="false" onAction="#ClickedMenuBar_Help_Help" text="Help" />
-                <MenuItem mnemonicParsing="false" onAction="#ClickedMenuBar_Help_About" text="About" />
-              </items>
-            </Menu>
-        </menus>
-      </MenuBar>
-      <ToolBar layoutY="32.0" prefHeight="64.0" prefWidth="600.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
-         <items>
-            <GridPane>
-              <columnConstraints>
+    <MenuBar prefHeight="32.0" prefWidth="600.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+        <Menu mnemonicParsing="false" text="File">
+            <MenuItem mnemonicParsing="false" onAction="#ClickedMenuBar_File_New" text="New">
+                <accelerator>
+                    <KeyCodeCombination alt="UP" code="N" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                </accelerator>
+            </MenuItem>
+            <MenuItem mnemonicParsing="false" onAction="#ClickedMenuBar_File_Open" text="Open">
+                <accelerator>
+                    <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                </accelerator>
+            </MenuItem>
+            <MenuItem mnemonicParsing="false" onAction="#ClickedMenuBar_File_Clear" text="Clear Canvas" />
+            <MenuItem mnemonicParsing="false" onAction="#ClickedMenuBar_File_Save" text="Save">
+                <accelerator>
+                    <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                </accelerator>
+            </MenuItem>
+            <MenuItem mnemonicParsing="false" onAction="#ClickedMenuBar_File_SaveAs" text="Save As" />
+            <MenuItem mnemonicParsing="false" onAction="#ClickedMenuBar_File_SaveAll" text="Save All">
+                <accelerator>
+                    <KeyCodeCombination alt="DOWN" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                </accelerator>
+            </MenuItem>
+            <MenuItem mnemonicParsing="false" onAction="#ClickedMenuBar_File_Exit" text="Exit">
+                <accelerator>
+                    <KeyCodeCombination alt="DOWN" code="F4" control="UP" meta="UP" shift="UP" shortcut="UP" />
+                </accelerator>
+            </MenuItem>
+        </Menu>
+        <Menu mnemonicParsing="false" text="Help">
+            <MenuItem mnemonicParsing="false" onAction="#ClickedMenuBar_Help_Help" text="Help" />
+            <MenuItem mnemonicParsing="false" onAction="#ClickedMenuBar_Help_About" text="About" />
+         <MenuItem mnemonicParsing="false" text="Unspecified Action" />
+        </Menu>
+    </MenuBar>
+    <ToolBar layoutY="32.0" prefHeight="64.0" prefWidth="600.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+        <GridPane>
+            <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="120.0" prefWidth="120.0" />
-              </columnConstraints>
-              <rowConstraints>
+            </columnConstraints>
+            <rowConstraints>
                 <RowConstraints minHeight="12.0" prefHeight="12.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="12.0" prefHeight="12.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="12.0" prefHeight="12.0" vgrow="SOMETIMES" />
-              </rowConstraints>
-               <children>
-                  <TextField fx:id="WidthDimTextField" onAction="#WidthDimInputChanged" promptText="Width">
-                     <font>
-                        <Font size="8.0" />
-                     </font>
-                     <GridPane.margin>
-                        <Insets left="40.0" />
-                     </GridPane.margin>
-                  </TextField>
-                  <TextField fx:id="HeightDimTextField" onAction="#HeightDimInputChanged" promptText="Height" GridPane.rowIndex="1">
-                     <font>
-                        <Font size="8.0" />
-                     </font>
-                     <GridPane.margin>
-                        <Insets left="40.0" />
-                     </GridPane.margin>
-                  </TextField>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Canvas Dimensions" GridPane.rowIndex="2">
-                     <font>
-                        <Font size="10.0" />
-                     </font>
-                     <GridPane.margin>
-                        <Insets left="15.0" />
-                     </GridPane.margin>
-                  </Text>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Width:">
-                     <font>
-                        <Font size="10.0" />
-                     </font>
-                  </Text>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Height:" GridPane.rowIndex="1">
-                     <font>
-                        <Font size="10.0" />
-                     </font>
-                  </Text>
-               </children>
-            </GridPane>
-            <Separator orientation="VERTICAL" prefHeight="20.0" />
-            <GridPane>
-              <columnConstraints>
+            </rowConstraints>
+            <TextField fx:id="WidthDimTextField" onAction="#WidthDimInputChanged" promptText="Width">
+                <font>
+                    <Font size="8.0" />
+                </font>
+                <GridPane.margin>
+                    <Insets left="40.0" />
+                </GridPane.margin>
+            </TextField>
+            <TextField fx:id="HeightDimTextField" onAction="#HeightDimInputChanged" promptText="Height" GridPane.rowIndex="1">
+                <font>
+                    <Font size="8.0" />
+                </font>
+                <GridPane.margin>
+                    <Insets left="40.0" />
+                </GridPane.margin>
+            </TextField>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Canvas Dimensions" GridPane.rowIndex="2">
+                <font>
+                    <Font size="10.0" />
+                </font>
+                <GridPane.margin>
+                    <Insets left="15.0" />
+                </GridPane.margin>
+            </Text>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Width:">
+                <font>
+                    <Font size="10.0" />
+                </font>
+            </Text>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Height:" GridPane.rowIndex="1">
+                <font>
+                    <Font size="10.0" />
+                </font>
+            </Text>
+        </GridPane>
+        <Separator orientation="VERTICAL" prefHeight="20.0" />
+        <GridPane>
+            <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="140.0" prefWidth="140.0" />
-              </columnConstraints>
-              <rowConstraints>
+            </columnConstraints>
+            <rowConstraints>
                 <RowConstraints minHeight="24.0" prefHeight="24.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="12.0" prefHeight="12.0" vgrow="SOMETIMES" />
-              </rowConstraints>
-               <children>
-                  <Button mnemonicParsing="false" onAction="#ClickedToolBarPaintButton">
-                     <graphic>
-                        <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@Icons/paintbrush.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                     <tooltip>
-                        <Tooltip text="Pain(t)" />
-                     </tooltip>
-                     <GridPane.margin>
-                        <Insets />
-                     </GridPane.margin>
-                  </Button>
-                  <Button mnemonicParsing="false" onAction="#ClickedToolBarEraserButton">
-                     <graphic>
-                        <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@Icons/eraser.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                     <GridPane.margin>
-                        <Insets left="35.0" />
-                     </GridPane.margin>
-                     <tooltip>
-                        <Tooltip text="Eraser" />
-                     </tooltip>
-                  </Button>
-                  <Button mnemonicParsing="false" onAction="#ClickedToolBarColorPickerButton">
-                     <graphic>
-                        <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@Icons/colorDropper.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                     <tooltip>
-                        <Tooltip text="Color Picker" />
-                     </tooltip>
-                     <GridPane.margin>
-                        <Insets left="70.0" />
-                     </GridPane.margin>
-                  </Button>
-                  <Button mnemonicParsing="false" onAction="#ClickedToolBarCursorButton" translateX="105.0">
-                     <graphic>
-                        <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@Icons/cursor.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                     <tooltip>
-                        <Tooltip text="Cursor" />
-                     </tooltip>
-                  </Button>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Tools" translateX="58.0" GridPane.rowIndex="1">
-                     <font>
-                        <Font size="10.0" />
-                     </font>
-                  </Text>
-               </children>
-            </GridPane>
-            <Separator orientation="VERTICAL" prefHeight="20.0" />
-            <GridPane>
-              <columnConstraints>
+            </rowConstraints>
+            <Button mnemonicParsing="false" onAction="#ClickedToolBarPaintButton">
+                <graphic>
+                    <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                        <Image url="@Icons/paintbrush.png" />
+                    </ImageView>
+                </graphic>
+                <tooltip>
+                    <Tooltip text="Pain(t)" />
+                </tooltip>
+                <GridPane.margin>
+                    <Insets />
+                </GridPane.margin>
+            </Button>
+            <Button mnemonicParsing="false" onAction="#ClickedToolBarEraserButton">
+                <graphic>
+                    <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                        <Image url="@Icons/eraser.png" />
+                    </ImageView>
+                </graphic>
+                <GridPane.margin>
+                    <Insets left="35.0" />
+                </GridPane.margin>
+                <tooltip>
+                    <Tooltip text="Eraser" />
+                </tooltip>
+            </Button>
+            <Button mnemonicParsing="false" onAction="#ClickedToolBarColorPickerButton">
+                <graphic>
+                    <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                        <Image url="@Icons/colorDropper.png" />
+                    </ImageView>
+                </graphic>
+                <tooltip>
+                    <Tooltip text="Color Picker" />
+                </tooltip>
+                <GridPane.margin>
+                    <Insets left="70.0" />
+                </GridPane.margin>
+            </Button>
+            <Button mnemonicParsing="false" onAction="#ClickedToolBarCursorButton" translateX="105.0">
+                <graphic>
+                    <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                        <Image url="@Icons/cursor.png" />
+                    </ImageView>
+                </graphic>
+                <tooltip>
+                    <Tooltip text="Cursor" />
+                </tooltip>
+            </Button>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Tools" translateX="58.0" GridPane.rowIndex="1">
+                <font>
+                    <Font size="10.0" />
+                </font>
+            </Text>
+        </GridPane>
+        <Separator orientation="VERTICAL" prefHeight="20.0" />
+        <GridPane>
+            <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="100.0" prefWidth="100.0" />
-              </columnConstraints>
-              <rowConstraints>
+            </columnConstraints>
+            <rowConstraints>
                 <RowConstraints minHeight="24.0" prefHeight="24.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="12.0" prefHeight="12.0" vgrow="SOMETIMES" />
-              </rowConstraints>
-               <children>
-                  <Slider fx:id="slider" max="10.0" min="1.0" minorTickCount="10" showTickMarks="true" />
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Brush Width" translateX="20.0" GridPane.rowIndex="1">
-                     <font>
-                        <Font size="10.0" />
-                     </font>
-                  </Text>
-               </children>
-            </GridPane>
-            <Separator orientation="VERTICAL" prefHeight="20.0" />
-            <GridPane>
-              <columnConstraints>
+            </rowConstraints>
+            <Slider fx:id="slider" max="10.0" min="1.0" minorTickCount="10" showTickMarks="true" />
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Brush Width" translateX="20.0" GridPane.rowIndex="1">
+                <font>
+                    <Font size="10.0" />
+                </font>
+            </Text>
+        </GridPane>
+        <Separator orientation="VERTICAL" prefHeight="20.0" />
+        <GridPane>
+            <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="140.0" prefWidth="140.0" />
-              </columnConstraints>
-              <rowConstraints>
+            </columnConstraints>
+            <rowConstraints>
                 <RowConstraints minHeight="24.0" prefHeight="24.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="12.0" prefHeight="12.0" vgrow="SOMETIMES" />
-              </rowConstraints>
-               <children>
-                  <ColorPicker fx:id="cp" promptText="Change Color">
-                     <padding>
-                        <Insets left="12.0" />
-                     </padding>
-                     <value>
-                        <Color />
-                     </value>
-                  </ColorPicker>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Color" translateX="57.0" GridPane.rowIndex="1">
-                     <font>
-                        <Font size="10.0" />
-                     </font>
-                  </Text>
-               </children>
-            </GridPane>
-            <Separator orientation="VERTICAL" prefHeight="20.0" />
-            <GridPane>
-              <columnConstraints>
+            </rowConstraints>
+            <ColorPicker fx:id="cp" promptText="Change Color">
+                <padding>
+                    <Insets left="12.0" />
+                </padding>
+                <value>
+                    <Color />
+                </value>
+            </ColorPicker>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Color" translateX="57.0" GridPane.rowIndex="1">
+                <font>
+                    <Font size="10.0" />
+                </font>
+            </Text>
+        </GridPane>
+        <Separator orientation="VERTICAL" prefHeight="20.0" />
+        <GridPane>
+            <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="210.0" prefWidth="75.0" />
-              </columnConstraints>
-              <rowConstraints>
+            </columnConstraints>
+            <rowConstraints>
                 <RowConstraints minHeight="24.0" prefHeight="24.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="12.0" prefHeight="12.0" vgrow="SOMETIMES" />
-              </rowConstraints>
-               <children>
-                  <Button mnemonicParsing="false" onAction="#ClickedToolBarLineButton">
-                     <graphic>
-                        <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@Icons/line.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                     <tooltip>
-                        <Tooltip text="Line Tool" />
-                     </tooltip>
-                  </Button>
-                  <Button mnemonicParsing="false" onAction="#ClickedToolBarDashedLineButton" translateX="35.0">
-                     <graphic>
-                        <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@Icons/dashedLine.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                     <tooltip>
-                        <Tooltip text="Dashed Line Tool" />
-                     </tooltip>
-                  </Button>
-                  <Button mnemonicParsing="false" onAction="#ClickedToolBarSquareButton" translateX="70.0">
-                     <graphic>
-                        <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@Icons/square.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                     <tooltip>
-                        <Tooltip text="Square Tool" />
-                     </tooltip>
-                  </Button>
-                  <Button mnemonicParsing="false" onAction="#ClickedToolBarRectangleButton" translateX="105.0">
-                     <graphic>
-                        <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@Icons/rectangle.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                     <tooltip>
-                        <Tooltip text="Rectangle Tool" />
-                     </tooltip>
-                  </Button>
-                  <Button mnemonicParsing="false" onAction="#ClickedToolBarCircleButton" translateX="140.0">
-                     <graphic>
-                        <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@Icons/circle.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                     <tooltip>
-                        <Tooltip text="Circle Tool" />
-                     </tooltip>
-                  </Button>
-                  <Button mnemonicParsing="false" onAction="#ClickedToolBarEllipseButton" translateX="175.0">
-                     <graphic>
-                        <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@Icons/ellipse.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                     <tooltip>
-                        <Tooltip text="Ellipse Tool" />
-                     </tooltip>
-                  </Button>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Shapes" translateX="85.0" GridPane.rowIndex="1">
-                     <font>
-                        <Font size="10.0" />
-                     </font>
-                  </Text>
-               </children>
-            </GridPane>
-            <Separator orientation="VERTICAL" prefHeight="20.0" />
-         </items></ToolBar>
-      <TabPane fx:id="tabPane" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="96.0" />
-   </children>
+            </rowConstraints>
+            <Button mnemonicParsing="false" onAction="#ClickedToolBarLineButton">
+                <graphic>
+                    <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                        <Image url="@Icons/line.png" />
+                    </ImageView>
+                </graphic>
+                <tooltip>
+                    <Tooltip text="Line Tool" />
+                </tooltip>
+            </Button>
+            <Button mnemonicParsing="false" onAction="#ClickedToolBarDashedLineButton" translateX="35.0">
+                <graphic>
+                    <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                        <Image url="@Icons/dashedLine.png" />
+                    </ImageView>
+                </graphic>
+                <tooltip>
+                    <Tooltip text="Dashed Line Tool" />
+                </tooltip>
+            </Button>
+            <Button mnemonicParsing="false" onAction="#ClickedToolBarSquareButton" translateX="70.0">
+                <graphic>
+                    <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                        <Image url="@Icons/square.png" />
+                    </ImageView>
+                </graphic>
+                <tooltip>
+                    <Tooltip text="Square Tool" />
+                </tooltip>
+            </Button>
+            <Button mnemonicParsing="false" onAction="#ClickedToolBarRectangleButton" translateX="105.0">
+                <graphic>
+                    <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                        <Image url="@Icons/rectangle.png" />
+                    </ImageView>
+                </graphic>
+                <tooltip>
+                    <Tooltip text="Rectangle Tool" />
+                </tooltip>
+            </Button>
+            <Button mnemonicParsing="false" onAction="#ClickedToolBarCircleButton" translateX="140.0">
+                <graphic>
+                    <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                        <Image url="@Icons/circle.png" />
+                    </ImageView>
+                </graphic>
+                <tooltip>
+                    <Tooltip text="Circle Tool" />
+                </tooltip>
+            </Button>
+            <Button mnemonicParsing="false" onAction="#ClickedToolBarEllipseButton" translateX="175.0">
+                <graphic>
+                    <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                        <Image url="@Icons/ellipse.png" />
+                    </ImageView>
+                </graphic>
+                <tooltip>
+                    <Tooltip text="Ellipse Tool" />
+                </tooltip>
+            </Button>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Shapes" translateX="85.0" GridPane.rowIndex="1">
+                <font>
+                    <Font size="10.0" />
+                </font>
+            </Text>
+        </GridPane>
+        <Separator orientation="VERTICAL" prefHeight="20.0" />
+    </ToolBar>
+    <TabPane fx:id="tabPane" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="96.0" />
 </AnchorPane>
