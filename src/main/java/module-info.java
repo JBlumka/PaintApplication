@@ -3,6 +3,7 @@ module com.example.pain_t_v1 {
     requires javafx.fxml;
     requires java.desktop;
     requires javafx.swing;
+    requires javafx.media;
 
 
     opens com.example.pain_t to javafx.fxml;
