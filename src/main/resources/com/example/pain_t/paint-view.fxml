@@ -120,7 +120,7 @@
         <Separator orientation="VERTICAL" prefHeight="20.0" />
         <GridPane>
             <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="140.0" prefWidth="140.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="175.0" prefWidth="175.0" />
             </columnConstraints>
             <rowConstraints>
                 <RowConstraints minHeight="24.0" prefHeight="24.0" vgrow="SOMETIMES" />
@@ -175,11 +175,23 @@
                     <Tooltip text="Cursor" />
                 </tooltip>
             </Button>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Tools" translateX="58.0" GridPane.rowIndex="1">
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Tools" translateX="90.0" GridPane.rowIndex="1">
                 <font>
                     <Font size="10.0" />
                 </font>
             </Text>
+         <Button mnemonicParsing="false" onAction="#ClickedToolBarCutButton" translateX="140.0">
+            <graphic>
+               <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                     <Image url="@Icons/CopyCut.png" />
+                  </image>
+               </ImageView>
+            </graphic>
+            <tooltip>
+               <Tooltip text="Cut" />
+            </tooltip>
+         </Button>
         </GridPane>
         <Separator orientation="VERTICAL" prefHeight="20.0" />
         <GridPane>
@@ -351,11 +363,6 @@
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Audio" GridPane.rowIndex="1" />
          </children>
       </GridPane>
-      <TextField fx:id="NumOfSidesTextField" promptText="Number of Sides" scaleX="0.8" scaleY="0.8">
-         <font>
-            <Font size="10.0" />
-         </font>
-      </TextField>
     </ToolBar>
     <TabPane fx:id="tabPane" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="96.0" />
 </AnchorPane>

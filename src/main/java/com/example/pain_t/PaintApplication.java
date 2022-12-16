@@ -47,7 +47,15 @@ public class PaintApplication extends Application {
         launch();
     }
 
-    //Custom shutdown dialog message
+
+    /**
+     * Helper method to prompt user to save all work before closing application.
+     * <p>
+     * This method always displays an Alert to the user, prompting them to save all projects before closing.
+     * If chosen by user, saveAllTabs() is executed before application closes.
+     *
+     * @param  mainWindow  Application window to be closed
+     */
     private void shutdown(Stage mainWindow) {
         Alert alert = new Alert(Alert.AlertType.NONE, "Do you want to save changes to all projects before closing?\n", ButtonType.YES, ButtonType.NO, ButtonType.CANCEL);
         alert.setTitle("Pain(t)");

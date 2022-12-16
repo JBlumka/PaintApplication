@@ -46,20 +46,6 @@ public class CustomCanvas extends Canvas {
         } catch(Exception e) { System.out.println("Error occurred while pushing to Undo stack");}
     }
 
-    public Object popOneFromUndoStack() {
-        return undoStack.pop();
-    }
-
-    public void pushOneToRedoStack(List action) {
-        redoStack.push(action);
-    }
-
-    public Object popOneFromRedoStack() {
-        return redoStack.pop();
-    }
-
-    public void clearUndoStack() { undoStack.clear();}
-
     public void clearRedoStack() { redoStack.clear();}
 
     public Stack<List> Undo() {

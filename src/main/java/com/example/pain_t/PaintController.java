@@ -17,7 +17,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
-import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -31,6 +30,9 @@ import java.util.*;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
+/**
+ * Controller for managing all actions performed by user within PaintApplication
+ */
 public class PaintController {
 
     //ATTRIBUTE DECLARATIONS
@@ -40,50 +42,70 @@ public class PaintController {
     private TextField WidthDimTextField;
     @FXML
     private TextField HeightDimTextField;
-
     @FXML
     private ColorPicker cp;
     @FXML
     private Slider slider;
-
     @FXML
     private TabPane tabPane;
 
-    @FXML
-    private TextField NumOfSidesTextField;
+    //Number of sides variable for N-polygon tool
     public int numSides;
 
+    //Temporary canvas used for canvas drawing operations while dragging cursor
     Canvas tempCanvas;
 
-    //Drawing Parameters
+    //Mouseevent initial positon parameters
     double drawStartX;
     double drawStartY;
 
     //Tab parameters
     int tabIterator = 0;
 
-    //Undo-Redo global variable
+    //Event list for Undo-Redo implementation
     List<Object> drawEventList;
 
-    //Enumerated modes
+    //Declaration of enumerated modes
     public enum Mode {
-        Paint, Eraser, ColorPicker, Cursor, Line, DashedLine, Square, Rectangle, Circle, Ellipse, Triangle, NPolygon, Image, Clear, ResizeWidth, ResizeHeight
+        Paint, Eraser, ColorPicker, Cursor, Line, DashedLine, Square, Rectangle, Circle, Ellipse, Triangle, NPolygon, Image, Clear, ResizeWidth, ResizeHeight, Cut_Action
     }
+
+    //Status variable for tracking draw functions
     private Mode status = Mode.Cursor;
 
     //END OF ATTRIBUTE DECLARATIONS
 
 
 
-    //TOP MENU BAR
+    //TOP MENU BAR METHODS
 
-    //Click event for Menu > File > New
+    /**
+     * Handles the click event for the File > New MenuItem in the MenuBar.
+     * <p>
+     * This method always executes immediately, when the user clicks the specified MenuItem.
+     * This method creates a new Canvas object.
+     *
+     * @see         Canvas New canvas object
+     */
     public void ClickedMenuBar_File_New() {
         System.out.println("File/New Clicked");
         createNewCanvasTab();
     }
 
-    //Click event for Menu > File > Open
+
+    /**
+     * Handles the click event for the File > Open MenuItem in the MenuBar.
+     * Returns an Image object to be painted on the Canvas.
+     * Prompts user to specify image file location with a FileChooser.
+     * Event is added to the Undo/Redo stack.
+     * <p>
+     * This method always returns immediately, regardless of whether the
+     * image exists in a usable file location or file type.
+     * The applet will then attempt to draw the image on the Canvas,
+     * and handle errors appropriately.
+     *
+     * @see       Image  the image at the specified file location
+     */
     public void ClickedMenuBar_File_Open() {
         System.out.println("File/Open Clicked");
 
@@ -97,7 +119,7 @@ public class PaintController {
             System.out.println(selectedFile);
             openImageMethod(selectedFile);
 
-            //UNDO REDO INFORMATION
+            //Add event to Undo/Redo Stack
             List<Object> drawEventList = new ArrayList<>();
             drawEventList.add(Mode.Image);
             drawEventList.add(selectedFile);
@@ -106,21 +128,36 @@ public class PaintController {
         }
     }
 
-    //Click event for Menu > File > Clear
+
+    /**
+     * Handles the click event for the File > Clear MenuItem in the MenuBar.
+     * Event is added to the Undo/Redo Stack.
+     * <p>
+     * This method always executes immediately, clearing the current Canvas.
+     *
+     * @see         Canvas Cleared canvas object
+     */
     public void ClickedMenuBar_File_Clear() {
         System.out.println("File/Clear Clicked");
         clearCanvasMethod(getCurrentCanvas());
 
-
-        //TODO UNDO/REDO
-        List<Object> drawEventList = new ArrayList<>();
+        //Add event to Undo/Redo Stack
         drawEventList.add(Mode.Clear);
         System.out.println(drawEventList);
         getCurrentCanvas().pushOneToUndoStack(drawEventList);
-
     }
 
-    //Click event for Menu > File > Undo
+
+    /**
+     * Handles the click event for the File > Undo MenuItem in the MenuBar.
+     * Undoes the most recently occurred action on the currently selected Canvas object.
+     * <p>
+     * This method always executes immediately, regardless of whether there are any actions to undo.
+     * Errors are handled appropriately.
+     * The graphics that draw the Canvas will update to reflect the undo action.
+     *
+     * @see         Canvas Canvas will reflect change from undoed action
+     */
     public void ClickedMenuBar_File_Undo() {
 
         System.out.println("Clicked UNDO");
@@ -138,7 +175,17 @@ public class PaintController {
         }
     }
 
-    //Click event for Menu > File > Redo
+
+    /**
+     * Handles the click event for the File > Redo MenuItem in the MenuBar.
+     * Redoes the most recent Undo action on the currently selected Canvas object.
+     * <p>
+     * This method always executes immediately, regardless of whether there are any actions to redo.
+     * Errors are handled appropriately.
+     * The graphics that draw the Canvas will update to reflect the redo action.
+     *
+     * @see         Canvas Canvas will reflect change from redoed action
+     */
     public void ClickedMenuBar_File_Redo() {
         System.out.println("Clicked REDO");
         if(getCurrentCanvas().redoStack.size()>0) {
@@ -147,7 +194,15 @@ public class PaintController {
         }
     }
 
-    //Click event for Menu > File > Save
+
+    /**
+     * Handles the click event for the File > Save MenuItem in the MenuBar.
+     * Saves current Canvas object to previously specified file location.
+     * <p>
+     * This method always executes immediately, regardless of whether the
+     * image has been previously saved. If the current Canvas has not been saved previously,
+     * the SaveAs function is invoked to prompt user for save file location.
+     */
     public void ClickedMenuBar_File_Save() {
         System.out.println("File/Save Clicked");
 
@@ -161,7 +216,13 @@ public class PaintController {
         currentTab.setText(getCurrentCanvas().getSavePath().getName());
     }
 
-    //Click event for Menu > File > SaveAs
+
+    /**
+     * Handles the click event for the File > SaveAs MenuItem in the MenuBar.
+     * Saves current Canvas object to specified file location.
+     * <p>
+     * This method always executes immediately, prompting the user for a file location to save the current Canvas object to.
+     */
     public void ClickedMenuBar_File_SaveAs() {
         System.out.println("File/SaveAs Clicked");
         SaveAsMethod(getCurrentCanvas());
@@ -169,12 +230,31 @@ public class PaintController {
         currentTab.setText(getCurrentCanvas().getSavePath().getName());
     }
 
+
+    /**
+     * Handles the click event for the File > SaveAll MenuItem in the MenuBar.
+     * Saves all Canvas objects to previously specified file locations.
+     * Each Canvas object has an individually assignable file location attribute.
+     * <p>
+     * This method always executes immediately, regardless of whether the Canvas objects has been previously saved.
+     * This method increments through all Canvases, and if a Canvas has not been saved previously,
+     * the Canvas to be saved is displayed and the SaveAs function is invoked to prompt user for save file location.
+     */
     public void ClickedMenuBar_File_SaveAll() {
         System.out.println("File/SaveAll Clicked");
         saveAllTabs();
     }
 
-    //Click event for Menu > File > Exit
+
+    /**
+     * Handles the click event for the File > Exit MenuItem in the MenuBar.
+     * Prompts user to save all unsaved work before closing application.
+     * This save prompt can be bypassed by the user.
+     * <p>
+     * This method always executes immediately, opening a window event to prompt user to save.
+     *
+     * @see         WindowEvent Window event prompt to save before closing
+     */
     public void ClickedMenuBar_File_Exit() {
         System.out.println("File/Exit Clicked");
         Stage stage = (Stage) getCurrentCanvas().getScene().getWindow();
@@ -186,7 +266,15 @@ public class PaintController {
         );
     }
 
-    //Click event for Menu > Help > Help
+
+    /**
+     * Handles the click event for the Help > Help MenuItem in the MenuBar.
+     * An alert is displayed showing "helpful" information about the application
+     * <p>
+     * This method always executes immediately, displaying an alert to the user.
+     *
+     * @see         Alert "helpful" information dialog alert
+     */
     public void ClickedMenuBar_Help_Help() {
         System.out.println("Help/About Clicked");
 
@@ -197,23 +285,40 @@ public class PaintController {
         alert.showAndWait();
     }
 
-    //Click event for Menu > Help > About
+
+    /**
+     * Handles the click event for the Help > About MenuItem in the MenuBar.
+     * Displays version number and other application information to the user
+     * <p>
+     * This method always executes immediately, displaying an alert with application
+     * information to the user.
+     *
+     * @see         Alert Application information alert
+     */
     public void ClickedMenuBar_Help_About() {
         System.out.println("Help/About Clicked");
 
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Information Dialog");
         alert.setHeaderText(null);
-        alert.setContentText("Welcome to Pain(t) Version 3.141\n\nIcons sourced from https://icons8.com/");
+        alert.setContentText("Welcome to Pain(t) Release Version 1 \n\nIcons sourced from https://icons8.com/");
         alert.showAndWait();
     }
-    //END OF TOP MENU BAR
+    //END OF TOP MENU BAR METHODS
 
 
 
-    //TOP TOOLBAR
+    //TOOLBAR METHODS
 
-    //Click event for Canvas Dimension Width text field
+    /**
+     * Handles the Enter key event for the Width Canvas Dimension TextField in the toolbar.
+     * The current canvases Width is changed to reflect the modified width dimension.
+     * <p>
+     * This method always executes immediately, regardless of whether the
+     * width dimension has been changed.
+     *
+     * @see           Canvas Width dimension of current canvas
+     */
     public void WidthDimInputChanged() {
         System.out.println("ToolBar CanvasDim Width Entered");
         double inputWidth = clamp(Double.parseDouble(WidthDimTextField.getCharacters().toString()),1,3000);
@@ -230,7 +335,15 @@ public class PaintController {
         WidthDimTextField.setText(Double.toString(getCurrentCanvas().getWidth()));
     }
 
-    //Click event for Canvas Dimension Height text field
+    /**
+     * Handles the Enter key event for the Height Canvas Dimension TextField in the toolbar.
+     * The current canvases Height is changed to reflect the modified height dimension.
+     * <p>
+     * This method always executes immediately, regardless of whether the
+     * height dimension has been changed.
+     *
+     * @see           Canvas Height dimension of current canvas
+     */
     public void HeightDimInputChanged() {
         System.out.println("ToolBar CanvasDim Height Entered");
         double inputHeight = clamp(Double.parseDouble(HeightDimTextField.getCharacters().toString()),1,2000);
@@ -247,81 +360,175 @@ public class PaintController {
         HeightDimTextField.setText(Double.toString(getCurrentCanvas().getHeight()));
     }
 
+
+    /**
+     * Handles the click event for the Eight button in the Toolbar.
+     * Audio of the word "Eight" is played.
+     * <p>
+     * This method always executes immediately.
+     */
     public void ClickedToolBarEightButton() {
         System.out.println("EIGHT");
-        Media media = new Media(new File("C:\\Users\\jeb\\Documents\\CS250Code\\Pain(t)\\Pain_t_V1\\src\\main\\resources\\com\\example\\pain_t\\eight.wav").toURI().toString()); //TODO MAKE INTO A RELATIVE PATH
+        Media media = new Media(new File("src/main/resources/com/example/pain_t/eight.wav").toURI().toString());
         MediaPlayer player = new MediaPlayer(media);
         player.play();
     }
 
 
-    //Click event for ToolBar > PaintButton
+    /**
+     * Handles the click event for the Paint button in the Toolbar.
+     * The painting mode is set to Paint.
+     * <p>
+     * This method always executes immediately.
+     */
     public void ClickedToolBarPaintButton() {
         System.out.println("ToolBar Paint Button Clicked!");
         status = Mode.Paint;
     }
 
-    //Click event for ToolBar > EraserButton
+
+    /**
+     * Handles the click event for the Eraser button in the Toolbar.
+     * The painting mode is set to Eraser.
+     * <p>
+     * This method always executes immediately.
+     */
     public void ClickedToolBarEraserButton() {
         System.out.println("ToolBar Eraser Button Clicked!");
         status = Mode.Eraser;
     }
 
-    //Click event for ToolBar > ColorPickerButton
+
+    /**
+     * Handles the click event for the ColorPicker button in the Toolbar.
+     * The painting mode is set to ColorPicker.
+     * <p>
+     * This method always executes immediately.
+     */
     public void ClickedToolBarColorPickerButton() {
         System.out.println("ToolBar ColorPicker Button Clicked!");
         status = Mode.ColorPicker;
     }
 
-    //Click event for ToolBar > CursorButton
+
+    /**
+     * Handles the click event for the Cursor button in the Toolbar.
+     * The painting mode is set to Cursor.
+     * <p>
+     * This method always executes immediately.
+     */
     public void ClickedToolBarCursorButton() {
         System.out.println("ToolBar Cursor Button Clicked!");
         status = Mode.Cursor;
     }
 
-    //Click event for ToolBar > LineButton
+
+    /**
+     * Handles the click event for the Cut button in the Toolbar.
+     * The painting mode is set to Cut_Action.
+     * <p>
+     * This method always executes immediately.
+     */
+    public void ClickedToolBarCutButton() {
+        System.out.println("ToolBar Cut Button Clicked!");
+        status = Mode.Cut_Action;
+    }
+
+
+    /**
+     * Handles the click event for the Line button in the Toolbar.
+     * The painting mode is set to Line.
+     * <p>
+     * This method always executes immediately.
+     */
     public void ClickedToolBarLineButton() {
         System.out.println("ToolBar Line Button Clicked!");
         status = Mode.Line;
     }
 
-    //Click event for ToolBar > LineButton
+
+    /**
+     * Handles the click event for the Dashed Line button in the Toolbar.
+     * The painting mode is set to DashedLine.
+     * <p>
+     * This method always executes immediately.
+     */
     public void ClickedToolBarDashedLineButton() {
         System.out.println("ToolBar Dashed Line Button Clicked!");
         status = Mode.DashedLine;
     }
 
-    //Click event for ToolBar > SquareButton
+
+    /**
+     * Handles the click event for the Square button in the Toolbar.
+     * The painting mode is set to Square.
+     * <p>
+     * This method always executes immediately.
+     */
     public void ClickedToolBarSquareButton() {
         System.out.println("ToolBar Square Button Clicked!");
         status = Mode.Square;
     }
 
-    //Click event for ToolBar > RectangleButton
+
+    /**
+     * Handles the click event for the Rectangle button in the Toolbar.
+     * The painting mode is set to Rectangle.
+     * <p>
+     * This method always executes immediately.
+     */
     public void ClickedToolBarRectangleButton() {
         System.out.println("ToolBar Rectangle Button Clicked!");
         status = Mode.Rectangle;
     }
 
-    //Click event for ToolBar > CircleButton
+
+    /**
+     * Handles the click event for the Circle button in the Toolbar.
+     * The painting mode is set to Circle.
+     * <p>
+     * This method always executes immediately.
+     */
     public void ClickedToolBarCircleButton() {
         System.out.println("ToolBar Circle Button Clicked!");
         status = Mode.Circle;
     }
 
-    //Click event for ToolBar > EllipseButton
+
+    /**
+     * Handles the click event for the Ellipse button in the Toolbar.
+     * The painting mode is set to Ellipse.
+     * <p>
+     * This method always executes immediately.
+     */
     public void ClickedToolBarEllipseButton() {
         System.out.println("ToolBar Ellipse Button Clicked!");
         status = Mode.Ellipse;
     }
 
-    //Click event for ToolBar > TriangleButton
+
+    /**
+     * Handles the click event for the Triangle button in the Toolbar.
+     * The painting mode is set to Triangle.
+     * <p>
+     * This method always executes immediately.
+     */
     public void ClickedToolBarTriangleButton() {
         System.out.println("ToolBar Triangle Button Clicked!");
         status = Mode.Triangle;
     }
 
-    //Click event for ToolBar > NPolygonButton
+
+    /**
+     * Handles the click event for the N-Polygon button in the Toolbar.
+     * A stage is shown, prompting the user for the number of sides.
+     * The number of sides given is clamped to a value between 3 and 25 inclusive.
+     * The painting mode is set to NPolygon.
+     * <p>
+     * This method always executes immediately, displaying a stage to the user.
+     *
+     * @see         Scene Prompt for number of sides
+     */
     public void ClickedToolBarNPolygonButton() {
         System.out.println("ToolBar N-Polygon Button Clicked!");
 
@@ -355,7 +562,7 @@ public class PaintController {
             public void handle(ActionEvent actionEvent) {
                 try {
                     double input = Double.parseDouble(newSceneTextField.getText());
-                        numSides = (int) Math.floor(clamp((Double) input, 3.0, 25.0));
+                        numSides = (int) Math.floor(clamp( input, 3.0, 25.0));
                         System.out.println("numSides = " + numSides);
                 }
                 catch(Exception e) {
@@ -366,18 +573,24 @@ public class PaintController {
             }
         });
 
-        status = Mode.NPolygon; //TODO USE numSides only, assuming that it is a valid number, remove all references to temporary textbox
+        status = Mode.NPolygon;
     }
-    //END OF TOP TOOLBAR
+    //END OF TOOLBAR METHODS
 
 
 
     //CANVAS DRAW METHODS
 
-    //Canvas Mouse Enter Event for changing cursor to Cross-hair
+    /**
+     * Handles the Mouse Enter event within the displayed canvas.
+     * Changes the mouse cursor into a Cross-hair while mouse is inside the Canvas.
+     * <p>
+     * This method always executes immediately.
+     *
+     * @see Cursor Cross-hair cursor
+     */
     public void CanvasOnMouseEntered(MouseEvent mouseEvent) {
         System.out.println("Mouse Entered Canvas");
-
         if (status == Mode.Cursor) {
             getCurrentCanvas().getScene().setCursor(Cursor.DEFAULT);
         } else {
@@ -385,19 +598,34 @@ public class PaintController {
         }
     }
 
-    //Canvas Mouse Enter Event for changing cursor to Default
+
+    /**
+     * Handles the Mouse Exit event for the displayed canvas.
+     * Changes the mouse cursor into a default mouse cursor while mouse is outside the Canvas.
+     * <p>
+     * This method always executes immediately.
+     *
+     * @see Cursor Default mouse cursor
+     */
     public void CanvasOnMouseExited(MouseEvent mouseEvent) {
         System.out.println("Mouse Exited Canvas");
         getCurrentCanvas().getScene().setCursor(Cursor.DEFAULT);
     }
 
-    //Method called when mouse is pressed on canvas - Controls drawing modes
+
+    /**
+     * Handles the Mouse Pressed event for the current canvas.
+     * Begins execution of currently selected drawing mode.
+     * Saves the starting mouse location and other needed attributes (differs based on drawing mode).
+     * <p>
+     * This method always executes immediately, regardless of whether
+     *  the currently selected drawing mode will modify the current Canvas.
+     */
     public void PressedCanvas(javafx.scene.input.MouseEvent mouseEvent) {
         System.out.println("Pressed on Canvas");
 
-        //UNDO REDO INFORMATION
-        if(status != Mode.Cursor && status != Mode.ColorPicker){
-            //getCurrentCanvas().redoStack = null;
+        //Add event to Undo/Redo stack
+        if(status != Mode.Cursor && status != Mode.ColorPicker && status != Mode.Cut_Action){
             drawEventList = new ArrayList();
             drawEventList.add(status);
             drawEventList.add(slider.getValue());
@@ -449,23 +677,26 @@ public class PaintController {
                 break;
 
             case NPolygon:
-                try {
-                    numSides = Integer.parseInt(NumOfSidesTextField.getText());
-                    if(numSides >=3) {
+                if(numSides >=3 && numSides <= 25) {
+                    temp_gc.setFill(Color.TRANSPARENT);
+                    temp_gc.fillRect(0, 0, getCurrentCanvas().getWidth(), getCurrentCanvas().getHeight());
+                    tempCanvas.toFront();
+                    ((AnchorPane)getCurrentCanvas().getParent()).getChildren().add(tempCanvas);
+                    drawStartX = mouseEvent.getX();
+                    drawStartY = mouseEvent.getY();
+                    temp_gc.setLineWidth(slider.getValue());
+                    temp_gc.setStroke(cp.getValue());
+                }
+                break;
 
-                        temp_gc.setFill(Color.TRANSPARENT);
-                        temp_gc.fillRect(0, 0, getCurrentCanvas().getWidth(), getCurrentCanvas().getHeight());
-                        tempCanvas.toFront();
-                        ((AnchorPane)getCurrentCanvas().getParent()).getChildren().add(tempCanvas);
-                        drawStartX = mouseEvent.getX();
-                        drawStartY = mouseEvent.getY();
-                        temp_gc.setLineWidth(slider.getValue());
-                        temp_gc.setStroke(cp.getValue());
-                    }
-                }
-                catch(Exception e) {
-                    System.out.println("Invalid number of sides");
-                }
+            case Cut_Action:
+
+                temp_gc.setFill(Color.TRANSPARENT);
+                temp_gc.fillRect(0, 0, getCurrentCanvas().getWidth(), getCurrentCanvas().getHeight());
+                tempCanvas.toFront();
+                ((AnchorPane)getCurrentCanvas().getParent()).getChildren().add(tempCanvas);
+                drawStartX = mouseEvent.getX();
+                drawStartY = mouseEvent.getY();
                 break;
 
             default:
@@ -473,7 +704,16 @@ public class PaintController {
         }
     }
 
-    //Method called when mouse is dragged on canvas - Controls drawing modes
+
+    /**
+     * Handles the Mouse dragged event for the displayed canvas.
+     * Executes the currently selected drawing mode on a temporary canvas
+     * in order to show the change dynamically
+     * <p>
+     * This method always executes immediately, dynamically showing drawing changes
+     *
+     * @see Canvas Shows drawing mode changes dynamically
+     */
     public void DraggedCanvas(javafx.scene.input.MouseEvent mouseEvent) {
         System.out.println("Dragged on Canvas");
         GraphicsContext temp_gc = tempCanvas.getGraphicsContext2D();
@@ -557,18 +797,34 @@ public class PaintController {
                 catch(Exception ignored) { }
                 break;
 
+            case Cut_Action:
+                clearCanvasMethod(tempCanvas);
+                    temp_gc.setFill(Color.WHITE);
+                    temp_gc.fillRect(Math.min(drawStartX, mouseEvent.getX()), Math.min(drawStartY, mouseEvent.getY()),  Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY() - drawStartY));
+
+                break;
+
             default:
                 break;
         }
     }
 
-    //Method called when mouse is released from canvas - Controls drawing modes
-    public void ReleasedCanvas(javafx.scene.input.MouseEvent mouseEvent) {
+    /**
+     * Handles the Mouse Release event for the displayed canvas.
+     * Removes the temporary canvas created in the mouse pressed event,
+     * executes the finalized drawing event on the current canvas,
+     * and adds the executed drawing event to the Undo/Redo stack
+     * <p>
+     * This method always executes immediately.
+     *
+     * @see Canvas Drawing event on current canvas
+     */
+    public void ReleasedCanvas(MouseEvent mouseEvent) {
         System.out.println("Released on Canvas");
         GraphicsContext gc = getCurrentCanvas().getGraphicsContext2D();
 
         //UNDO REDO INFORMATION
-        if(status != Mode.Cursor && status != Mode.ColorPicker && status != Mode.NPolygon) {
+        if(status != Mode.Cursor && status != Mode.ColorPicker && status != Mode.NPolygon && status != Mode.Cut_Action) {
             drawEventList.add(mouseEvent.getX());
             drawEventList.add(mouseEvent.getY());
             System.out.println(drawEventList);
@@ -608,7 +864,6 @@ public class PaintController {
                 tempCanvas = null;
                 gc.setLineWidth(slider.getValue());
                 gc.setStroke(cp.getValue());
-                //double length = define
                 gc.strokeRect(clamp(Math.min(mouseEvent.getX(), drawStartX),(drawStartX - Math.min(Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY()-drawStartY))),(drawStartX + Math.min(Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY()-drawStartY)))),clamp(Math.min(mouseEvent.getY(), drawStartY),(drawStartY - Math.min(Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY()-drawStartY))),(drawStartY + Math.min(Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY()-drawStartY)))),Math.min(Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY()-drawStartY)),Math.min(Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY()-drawStartY)));
                 break;
 
@@ -644,7 +899,7 @@ public class PaintController {
                 gc.setLineWidth(slider.getValue());
                 gc.setStroke(cp.getValue());
                 double[] xPoints = new double[]{drawStartX, mouseEvent.getX(), drawStartX + 0.5*(mouseEvent.getX() - drawStartX)};
-                double[] yPoints = new double[]{drawStartY, drawStartY, (Double) drawStartY + 0.5*Math.sqrt(3)*(Math.abs(mouseEvent.getX() - drawStartX)) * (mouseEvent.getY()-drawStartY)/(Math.abs((mouseEvent.getY()-drawStartY)))};
+                double[] yPoints = new double[]{drawStartY, drawStartY, drawStartY + 0.5*Math.sqrt(3)*(Math.abs(mouseEvent.getX() - drawStartX)) * (mouseEvent.getY()-drawStartY)/(Math.abs((mouseEvent.getY()-drawStartY)))};
                 gc.strokePolygon(xPoints, yPoints,3);
                 break;
 
@@ -681,6 +936,24 @@ public class PaintController {
                 catch(Exception ignored) { }
                 break;
 
+            case Cut_Action:
+
+                ((AnchorPane)getCurrentCanvas().getParent()).getChildren().remove(tempCanvas);
+                tempCanvas = null;
+
+                gc.setFill(Color.WHITE);
+                gc.fillRect(Math.min(drawStartX, mouseEvent.getX()), Math.min(drawStartY, mouseEvent.getY()),  Math.abs(mouseEvent.getX() - drawStartX), Math.abs(mouseEvent.getY() - drawStartY));
+
+                drawEventList = new ArrayList();
+                drawEventList.add(status);
+                drawEventList.add(Math.min(drawStartX, mouseEvent.getX())); //top left X
+                drawEventList.add(Math.min(drawStartY, mouseEvent.getY())); //top left Y
+                drawEventList.add(Math.abs(mouseEvent.getX() - drawStartX)); //X length
+                drawEventList.add(Math.abs(mouseEvent.getY() - drawStartY)); //Y length
+                System.out.println(drawEventList);
+                getCurrentCanvas().pushOneToUndoStack(drawEventList);
+                break;
+
             default:
                 break;
         }
@@ -691,7 +964,13 @@ public class PaintController {
 
     //HELPER METHODS
 
-    //Helper method for saving a canvas
+    /**
+     * Helper method for saving the current Canvas to a previously specified file location.
+     * <p>
+     * This method always executes immediately, regardless of whether the file path still exists.
+     *
+     * @param  canvas current Canvas object
+     */
     public void SaveMethod(CustomCanvas canvas) {
         try {
             WritableImage writableImage = new WritableImage((int) canvas.getWidth(), (int) canvas.getHeight());
@@ -721,8 +1000,15 @@ public class PaintController {
     }
 
 
-
-    //Helper method to invoke SaveAs
+    /**
+     * Helper method for executing SaveAs on the current Canvas.
+     * Prompts user for save file location with a FileChooser.
+     * <p>
+     * This method always executes immediately, prompting the user for a save file location.
+     *
+     * @param  canvas current Canvas object
+     * @see FileChooser  File chooser for selecting desired save file location
+     */
     public void SaveAsMethod(CustomCanvas canvas) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Save As");
@@ -765,11 +1051,28 @@ public class PaintController {
         }
     }
 
-    //Helper method to clear canvas
+
+    /**
+     * Helper method for clearing the current Canvas.
+     * Clears the current canvas.
+     * <p>
+     * This method always executes immediately, clearing the current canvas.
+     */
     private void clearCanvasMethod(Canvas canvasToClear) {
         canvasToClear.getGraphicsContext2D().clearRect(0, 0, canvasToClear.getWidth(), canvasToClear.getHeight());
     }
 
+
+    /**
+     * Helper method for opening a file on a new Canvas object.
+     * Executes the File > Open command
+     * <p>
+     * This method always executes immediately, creating a new Canvas,
+     * setting the tab name to the selectedFile filePath name, and displaying the selectedFile on the Canvas.
+     *
+     * @param  selectedFile  an absolute URL giving the base location of the image
+     * @see         Canvas   New canvas named with specified image filename and specified image displayed
+     */
     private void openImageMethod(File selectedFile) {
         getCurrentCanvas().setSavePath(selectedFile);
         clearCanvasMethod(getCurrentCanvas());
@@ -783,12 +1086,29 @@ public class PaintController {
         currentTab.setText(getCurrentCanvas().getSavePath().getName());
     }
 
-    //Helper method to clamp value between a minimum and maximum (for circle/square tools)
+
+    /**
+     * Helper method for clamping a double input value between a minimum and maximum value.
+     * <p>
+     * This method returns the result of clamping the double input value (val) between a minimum (min) and maximum (max) value.
+     *
+     * @param  val  input double value to be clamped
+     * @param  min  minimum double value to constrain input value
+     * @param  max  maximum double value to constrain input value
+     * @return      Clamped value of type double
+     */
     public static double clamp(double val, double min, double max) {
         return Math.max(min, Math.min(max, val));
     }
 
-    //Helper method to obtain the current tab's canvas
+
+    /**
+     * Helper method to return the current tab's Canvas.
+     * <p>
+     * This method returns the currently displayed Canvas object.
+     *
+     * @return      currently displayed Canvas object
+     */
     private CustomCanvas getCurrentCanvas () {
         Tab currentTab = tabPane.getSelectionModel().getSelectedItem();
         ScrollPane currentSP = (ScrollPane) currentTab.getContent();
@@ -796,6 +1116,12 @@ public class PaintController {
         return (CustomCanvas) currentAP.getChildren().get(0);
     }
 
+    /**
+     * Helper method to create a new Tab with embedded custom Canvas Object.
+     * <p>
+     * This method creates a new instance of the following hierarchy
+     * new Tab -> new ScrollPane -> new AnchorPane -> new custom Canvas
+     */
     //Helper method to create a new tab
     void createNewCanvasTab() {
         Tab newTab = new Tab();
@@ -837,10 +1163,18 @@ public class PaintController {
         tabPane.getSelectionModel().select(newTab); //Shows the new tab as the current view
 
         setCanvasDimText();
-
     }
 
-    //Helper method to launch closing dialog on closed tabs
+
+    /**
+     * Helper method to launch Alert prompting user to save changes to closing Tab object.
+     * <p>
+     * Displays Alert prompting user to save changes to the closing Tab and Canvas object.
+     * Executes SaveAs / Save on closingTab's canvas object if chosen by user.
+     *
+     * @param  closingTab  Tab object being closed by the user
+     * @see    Alert       prompt to save closing Tab/Canvas
+     */
     private void launchTabCloseConfirmDialog(Tab closingTab) {
         Alert alert = new Alert(Alert.AlertType.NONE, "Do you want to save changes to this tab before closing?\n", ButtonType.YES, ButtonType.NO, ButtonType.CANCEL);
         alert.setTitle("Pain(t)");
@@ -868,13 +1202,24 @@ public class PaintController {
 
     }
 
-    //Helper method to set canvas dimension text fields
+
+    /**
+     * Helper method to set canvas dimension TextFields to current canvas dimensions
+     * <p>
+     * This method always modifies the canvas Width TextField and canvas Height TextField
+     * to the dimensions of the currently displayed Canvas object.
+     */
     void setCanvasDimText() {
         WidthDimTextField.setText(String.valueOf(getCurrentCanvas().getWidth()));
         HeightDimTextField.setText(String.valueOf(getCurrentCanvas().getHeight()));
     }
 
-    //Helper method to save all tabs
+
+    /**
+     * Helper method to implement File -> Save All
+     * <p>
+     * Iterates through all tabs and execute SaveAs/Save on each Canvas object.
+     */
     void saveAllTabs() {
         for(Tab i: tabPane.getTabs()){
             CustomCanvas canvasToSave = ((CustomCanvas)((AnchorPane)((ScrollPane)i.getContent()).getContent()).getChildren().get(0));
@@ -888,8 +1233,15 @@ public class PaintController {
         }
     }
 
-    //Helper method to interpret action lists for Undo/Redo
-
+    /**
+     * Helper method to interpret and execute action lists saved in the Undo/Redo stack.
+     * <p>
+     * Performs the action specified by a given drawing action list.
+     * Action performed depends on Mode specified in first index of the list.
+     *
+     * @param  list  an absolute URL giving the base location of the image
+     * @see         Canvas drawing action performed on current canvas
+     */
     void performAction(List list) {
         GraphicsContext gc = getCurrentCanvas().getGraphicsContext2D();
         Mode actionMode = (Mode) list.get(0);
@@ -1006,20 +1358,29 @@ public class PaintController {
                 getCurrentCanvas().setHeight((Double) list.get(1));
                 break;
 
+            case Cut_Action:
+                gc.setFill(Color.WHITE);
+                gc.fillRect((Double) list.get(1), (Double) list.get(2), (Double) list.get(3), (Double) list.get(4));
+                break;
+
             default:
                 break;
         }
     }
 
 
-
+    /**
+     * Helper method for initializing first canvas tab on program start-up.
+     * <p>
+     * This method creates a new Canvas tab and sets the canvas dimension TextFields to initialization dimensions.
+     *
+     * @see         Canvas Initial tab and canvas shown on program start-up
+     */
     //Helper method for initialization on start-up
     void startUpMethod() {
-        System.out.println("Hello World!");
-
+        System.out.println("Program Initialization");
         createNewCanvasTab();
         setCanvasDimText();
     }
     //END OF HELPER METHODS
 }
-//TODO ADD CHECK THAT REDUNDANT ACTIONS ARE NOT PUT ON UNDO STACK (Like a rectangle with size of zero)
